@@ -1,0 +1,3 @@
+[submodule "tools/console-table"]
+	path = tools/console-table
+	url = https://github.com/phplucidframe/console-table.git

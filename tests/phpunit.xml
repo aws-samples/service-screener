@@ -1,0 +1,9 @@
+<phpunit bootstrap="../bootstrap.inc.php">
+  <testsuites>
+    <testsuite name="ec2Test">
+      <directory>tests</directory>
+      <file>ec2sgTest.php</file>
+      <file>ec2ebsTest.php</file>
+    </testsuite>
+  </testsuites>
+</phpunit>

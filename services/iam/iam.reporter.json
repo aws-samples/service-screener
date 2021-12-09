@@ -1,0 +1,223 @@
+{
+	"rootMfaActive": {
+		"category": "S",
+		"^description": "You have not enabled Multi-Factor Authentication (MFA) on your root user. AWS MFA is a simple best practice that adds an extra layer of protection on top of your user name and password. With MFA enabled, when a user signs in to an AWS Management Console, they will be prompted for their user name and password (the first factor—what they know), as well as for an authentication code from their AWS MFA device (the second factor—what they have). Taken together, these multiple factors provide increased security for your AWS account settings and resources.",
+		"shortDesc": "Enable MFA on root user",
+		"criticality": "H",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": -1,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://aws.amazon.com/iam/features/mfa/>"
+		]
+	},
+	"mfaActive": {
+		"category": "S",
+		"^description": "You have not enabled Multi-Factor Authentication (MFA) on {$COUNT} IAM users. AWS MFA is a simple best practice that adds an extra layer of protection on top of your user name and password. With MFA enabled, when a user signs in to an AWS Management Console, they will be prompted for their user name and password (the first factor—what they know), as well as for an authentication code from their AWS MFA device (the second factor—what they have). Taken together, these multiple factors provide increased security for your AWS account settings and resources.",
+		"shortDesc": "Enable MFA on IAM user.",
+		"criticality": "H",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": -1,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://aws.amazon.com/iam/features/mfa/>"
+		]
+	},
+	"passwordLastChange365": {
+		"category": "S",
+		"^description": "{$COUNT} IAM user passwords have not been changed in more than 365 days. Please rotate the passwords. Alternatively, you can set an expiration period in the password policy.",
+		"shortDesc": "Rotate password",
+		"criticality": "H",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_admin-change-user.html>"
+		]
+	},
+	"passwordLastChange90": {
+		"category": "S",
+		"^description": "{$COUNT} IAM user passwords have not been changed in more than 90 days. Please rotate the passwords. Alternatively, you can set an expiration period in the password policy.",
+		"shortDesc": "Rotate password",
+		"criticality": "M",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_admin-change-user.html>"
+		]
+	},
+	"consoleLastAccess365": {
+		"category": "S",
+		"^description": "{$COUNT} IAM users have not accessed the AWS console in more than 360 days. Please identify the need for these IAM users to access the console and delete them if not needed.",
+		"shortDesc": "Validate IAM user console access.",
+		"criticality": "H",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_finding-unused.html>"
+		]
+	},
+	"consoleLastAccess90": {
+		"category": "S",
+		"^description": "{$COUNT} IAM users have not accessed the AWS console in more than 90 days. Please identify the need for these IAM users to access the console and delete them if not needed.",
+		"shortDesc": "Validate IAM user console access",
+		"criticality": "M",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_finding-unused.html>"
+		]
+	},
+	"passwordPolicy": {
+		"category": "S",
+		"^description": "You have not set a custom password policy. Setting a custom password policy will allow you to have the ability to require strong password practices, such as complexity level, avoiding re-use, and enforcing multi-factor authentication (MFA). If you don't set a custom password policy, IAM user passwords must meet the default AWS password policy.",
+		"shortDesc": "Set a custom password policy.",
+		"criticality": "M",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#IAMPasswordPolicy>"
+		]
+	},
+	"passwordPolicyWeak": {
+		"category": "S",
+		"^description": "Your current password policy is not strong. Improving the strength of your password policy would improve the security of your account. Consider implementing best practices when setting the password policy.",
+		"shortDesc": "Set a stronger password policy",
+		"criticality": "M",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#configure-strong-password-policy>"
+		]
+	},
+	"InlinePolicy": {
+		"category": "O",
+		"^description": "You have set an inline policy for {$COUNT} IAM users, groups or roles. An inline policy is a policy that's embedded in an IAM identity (a user, group, or role). In most cases, we recommend that you use managed policies instead of inline policies. This is because managed poliicies have several additional features such as reusability, central change management, versioning and rolling back, delegating permissions management and automatic updates. Inline policies are useful if you want to maintain a strict one-to-one relationship between a policy and the identity that it's applied to. For example, you want to be sure that the permissions in a policy are not inadvertently assigned to an identity other than the one they're intended for.",
+		"shortDesc": "Use managed policies",
+		"criticality": "L",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html>"
+		]
+	},
+	"InlinePolicyFullAccessOneServ": {
+		"category": "S",
+		"^description": "You have set an inline policy giving {$COUNT} users, groups and/or roles full access to one service. Consider switching to managed policies instead. It is also considered best practice to limit access by following the standard security advice of granting least privilege, or granting only the permissions required to perform a task. Determine what users and roles need to do and then craft policies that allow them to perform only those tasks.",
+		"shortDesc": "Limit access in policy",
+		"criticality": "H",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege>"
+		]
+	},
+	"InlinePolicyFullAdminAccess": {
+		"category": "S",
+		"^description": "You have set an inline policy providing full Administrator access to {$COUNT} users, groups or roles. It is considered best practice to limit access by following the standard security advice of granting least privilege, or granting only the permissions required to perform a task. Determine what users and roles need to do and then craft policies that allow them to perform only those tasks.",
+		"shortDesc": "Limit permissions.",
+		"criticality": "H",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege>"
+		]
+	},
+	"ManagedPolicyFullAccessOneServ": {
+		"category": "S",
+		"^description": "You have set a managed policy giving {$COUNT} users, groups and/or roles full access to one service. It is considered best practice to limit access by following the standard security advice of granting least privilege, or granting only the permissions required to perform a task. Determine what users and roles need to do and then craft policies that allow them to perform only those tasks.",
+		"shortDesc": "Limit permissions.",
+		"criticality": "H",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege>"
+		]
+	},
+	"FullAdminAccess": {
+		"category": "S",
+		"^description": "You have provided full Administrator access to {$COUNT} users, groups or roles. It is considered best practice to limit access by following the standard security advice of granting least privilege, or granting only the permissions required to perform a task. Determine what users and roles need to do and then craft policies that allow them to perform only those tasks.",
+		"shortDesc": "Limit permissions.",
+		"criticality": "H",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege>"
+		]
+	},
+	"userNotUsingGroup": {
+		"category": "O",
+		"^description": "{$COUNT} users are not within user groups. An IAM user group is a collection of IAM users. User groups let you specify permissions for multiple users, which can make it easier to manage the permissions for those users.",
+		"shortDesc": "Place IAM user within User Group",
+		"criticality": "L",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html>"
+		]
+	},
+	"groupEmptyUsers": {
+		"category": "O",
+		"^description": "{$COUNT} User groups have no users within them. Consider deleting the groups if not being used.",
+		"shortDesc": "Delete empty group.",
+		"criticality": "L",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Docs]<https://docs.aws.amazon.com/IAM/latest/UserGuide/id_groups_manage_delete.html>"
+		]
+	},
+	"unusedRole": {
+		"category": "OS",
+		"^description": "You have {$COUNT} unused roles in your account. Review the necessities of these roles, and delete them if no longer necessary. By removing unused roles, you can simplify monitoring and improve your security posture.",
+		"shortDesc": "Review & remove inactive roles",
+		"criticality": "L",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[AWS Blog]<https://aws.amazon.com/blogs/security/identify-unused-iam-roles-remove-confidently-last-used-timestamp/>"
+		]
+	},
+	"roleLongSession": {
+		"category": "S",
+		"^description": "{$COUNT} role session duration is longer than the default duration of 60 minutes. Unless your applications and/or federated users need to complete longer running workloads in a single session, it is recommended to stick with the default session duration.",
+		"shortDesc": "Review & reduce max session duration",
+		"criticality": "L",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": -1,
+		"ref": [
+			"[AWS Blog]<https://aws.amazon.com/blogs/security/enable-federated-api-access-to-your-aws-resources-for-up-to-12-hours-using-iam-roles/>"
+		]
+	}
+}
