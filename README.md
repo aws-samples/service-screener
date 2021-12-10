@@ -71,7 +71,7 @@ You can navigate to the service(s) listed to see detailed findings on each servi
 
 ![Sample Output](https://d39bs20xyg7k53.cloudfront.net/services-screener/p5-sample.gif)
 
-## Contributing to aws-screener
+## Contributing to service-screener
 We encourage public contributions! Please review [CONTRIBUTING](./CONTRIBUTING.md) for details on our code of conduct and development process.
 
 ## Contact
