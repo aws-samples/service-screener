@@ -77,8 +77,8 @@ We encourage public contributions! Please review [CONTRIBUTING](./CONTRIBUTING.m
 ## Contact
 Please review [CONTRIBUTING](./CONTRIBUTING.md) to raise any issues. 
 You can view our GitHub profiles below:
-[KuetTai](https://github.com/KuetTai)
-[Sarika](https://github.com/sarika-subram)
+* [KuetTai](https://github.com/KuetTai)
+* [Sarika](https://github.com/sarika-subram)
 
 ## Security
 
