@@ -64,7 +64,7 @@ You can [download the file](https://docs.aws.amazon.com/cloudshell/latest/usergu
 
 Once downloaded, unzip the file and open 'index.html' in your browser. You should see a page like this:
 
-![front page](https://d39bs20xyg7k53.cloudfront.net/services-screener/service-screener.jpg)
+![front page](https://d39bs20xyg7k53.cloudfront.net/services-screener/service-screener.jpg?v1)
 
 Ensure that you can see the service(s) run on listed on the left pane.
 You can navigate to the service(s) listed to see detailed findings on each service. 
