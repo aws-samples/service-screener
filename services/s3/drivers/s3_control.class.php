@@ -25,12 +25,16 @@ class s3_control extends evaluator{
             __warn("Unable to retrieve account information");
             $this->results['S3AccountPublicAccessBlock'] = [-1,'Insufficient info'];
         }
-        $resp = $this->s3Control->getPublicAccessBlock([
-            'AccountId' => $stsInfo['Account']
-        ]);
-        #__pr($resp);
-        // $param = $resp['PublicAccessBlockConfiguration'];
-        // __pr($param);
+        try {
+            $resp = $this->s3Control->getPublicAccessBlock([
+                'AccountId' => $stsInfo['Account']
+            ]);
+        } catch (exception $e) {
+            __warn("Public access configuration not set");
+            // $this->results['S3AccountPublicAccessBlock'] = [-1,'Off'];
+            return;
+        }
+        
         foreach ($resp['PublicAccessBlockConfiguration'] as $param)
             if($param != 1)
                 return;
