@@ -61,6 +61,10 @@ class Config{
         "env" => [
             "required" => false,
             "default" => 'c9'
+        ],
+        "profile" => [
+            "required" => false,
+            "default" => false
         ]
     ];
     
@@ -69,7 +73,7 @@ class Config{
     ];
     
     static function setAccountInfo($__AWS_CONFIG){
-        global $CONFIG, $PHPSDK_CRED_PROVIDER;
+        global $CONFIG, $PHPSDK_CRED_PROVIDER, $PHPSDK_CRED_PROFILE;
         $stsInfo = [];
         
         __info(" -- Acquiring identify info...");
@@ -77,6 +81,8 @@ class Config{
             $__AWS_CONFIG['version'] = self::AWS_SDK['STSCLIENT_VERS'];
             if(isset($PHPSDK_CRED_PROVIDER))
                 $__AWS_CONFIG['credentials'] = $PHPSDK_CRED_PROVIDER;
+            else if(isset($PHPSDK_CRED_PROFILE))
+                $__AWS_CONFIG['profile'] = $PHPSDK_CRED_PROFILE;
             
             $stsClient = new StsClient($__AWS_CONFIG);
             

@@ -15,6 +15,7 @@ class ArguParser{
         "d" => "debug",
         "t" => "test",
         "e" => "env",
+        "p" => "profile"
     ];
     
     static function Load(){
@@ -31,7 +32,7 @@ class ArguParser{
             $shortOps .= ($shortOp . $separator);
             $longOps[] = ($longOp . $separator);
         }
-        
+
         $options = getopt($shortOps, $longOps);
         return $options;
     }
