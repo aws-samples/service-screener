@@ -5,7 +5,7 @@ class service{
     protected $RULESPREFIX;
     function __construct($region){
         global $CONFIG, $DEBUG;
-        global $PHPSDK_CRED_PROVIDER;
+        global $PHPSDK_CRED_PROVIDER, $PHPSDK_CRED_PROFILE;
         
         $classname = get_class($this);
         
@@ -18,6 +18,8 @@ class service{
         
         if(isset($PHPSDK_CRED_PROVIDER))
             $this->__AWS_OPTIONS['credentials'] = $PHPSDK_CRED_PROVIDER;
+        else if(isset($PHPSDK_CRED_PROFILE))
+            $this->__AWS_OPTIONS['profile'] = $PHPSDK_CRED_PROFILE;
     }
     
     function setRules($rules){

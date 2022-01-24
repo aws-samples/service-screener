@@ -17,6 +17,12 @@ if($env == 'c9'){
     $PHPSDK_CRED_PROVIDER = Aws\Credentials\CredentialProvider::memoize($c9Credential);
 }
 
+$profile = $__cli_options['profile'];
+if(!empty($profile)){
+    global $PHPSDK_CRED_PROFILE;
+    $PHPSDK_CRED_PROFILE = $profile;
+}
+
 $__AWS_OPTIONS = [
     'signature_version' => CONFIG::AWS_SDK['signature_version']
 ];
@@ -42,9 +48,11 @@ $GLOBALRESOURCES = [];
 $overallTimeStart = microtime(true);
 
 exec('cd __fork; rm -f *.json');
+
+$scanInParallel = sizeof($services) > 1 ? true : false;
 foreach($services as $service){
     ## Scripts move to bootstrap.inc.php
-    scanByService($service, $regions);
+    scanByService($service, $regions, $scanInParallel);
 };
 
 while(pcntl_waitpid(0, $status) != -1);

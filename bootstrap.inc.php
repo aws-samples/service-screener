@@ -20,12 +20,15 @@ global $DEBUG, $CONFIG;
 $CONFIG = new Config();
 
 
-function scanByService($service, $regions){
+function scanByService($service, $regions, $scanInParallel = true){
     global $CONFIG, $CW;
-    $pid = pcntl_fork();
-    if($pid == -1){
+
+    if($scanInParallel)
+        $pid = pcntl_fork();
+
+    if($scanInParallel && $pid == -1){
         exit("Error forking...\n");   
-    }else if($pid ==0){
+    }else if(!$scanInParallel || $pid ==0){
         $time_start = microtime(true);
         
         $tempCount = 0;
@@ -63,6 +66,8 @@ function scanByService($service, $regions){
         
         $resourceCnt = $scanned['resources'];
         __info("#### ($resourceCnt) <".$service[0]."> completed within ". round(($time_end - $time_start), 3) . "s");
-        exit();
+        
+        if($scanInParallel)
+            exit();
     }
 }
