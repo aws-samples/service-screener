@@ -105,7 +105,7 @@ class ec2_sg extends evaluator{
     }
     
     function __checkSensitivePortOpenToAll(){
-        $ruleName = 'SGSEnsitivePortOpenToAll';
+        $ruleName = 'SGSensitivePortOpenToAll';
         
         ## DNS Port
         $protocol = 'both';
