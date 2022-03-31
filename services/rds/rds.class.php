@@ -45,6 +45,9 @@ class rds extends service{
             __info('... (RDS) inspecting ' . $instance['DBInstanceIdentifier']);
             
             $engine = $instance['Engine'];
+            if(!in_array($engine, self::engineDriver))
+                continue; 
+
             $engine = self::engineDriver[$engine];
                         
             $driver = 'rds_' . $engine;

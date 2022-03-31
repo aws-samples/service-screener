@@ -145,40 +145,49 @@ class rds_common extends evaluator{
         $instTypes = $CONFIG->get( $key, []);
         
         if(empty($instTypes)){
-            $results = $this->rdsClient->describeOrderableDBInstanceOptions([
-            #    'DBInstanceClass' => $this->db['DBInstanceClass'],
-                'Engine' => $this->db['Engine'],
-                'EngineVersion' => $this->db['EngineVersion'],
-                'MaxRecords' => 20
-            ]);
-            
-            $arr = [];
-            foreach($results->get('OrderableDBInstanceOptions') as $instClass){
-                $arr[] = $instClass['DBInstanceClass'];  
-            }
-            
-            while($results->get('Marker') !== null){
+            try{
                 $results = $this->rdsClient->describeOrderableDBInstanceOptions([
+                #    'DBInstanceClass' => $this->db['DBInstanceClass'],
                     'Engine' => $this->db['Engine'],
                     'EngineVersion' => $this->db['EngineVersion'],
-                    'Marker' => $results->get('Marker')
+                    'MaxRecords' => 20
                 ]);
                 
+                $arr = [];
                 foreach($results->get('OrderableDBInstanceOptions') as $instClass){
                     $arr[] = $instClass['DBInstanceClass'];  
                 }
+                
+                while($results->get('Marker') !== null){
+                    $results = $this->rdsClient->describeOrderableDBInstanceOptions([
+                        'Engine' => $this->db['Engine'],
+                        'EngineVersion' => $this->db['EngineVersion'],
+                        'Marker' => $results->get('Marker')
+                    ]);
+                    
+                    foreach($results->get('OrderableDBInstanceOptions') as $instClass){
+                        $arr[] = $instClass['DBInstanceClass'];  
+                    }
+                }
+                
+                $instTypes = array_values(array_unique($arr));
+                $CONFIG->set($key, $instTypes);
+                
+                $compressedLists = [];
+                foreach($instTypes as $instType){
+                    $temp = explode('.', $instType);
+                    $compressedLists[ $temp[1][0] ] = substr($temp[1], 1, 1);
+                }
+                
+                $CONFIG->set($key . '::zip', $compressedLists);
+            }catch(AWS\Rds\Exception\RdsException $e){
+                __warn("Unable to identify potential latest engine version");
+                if($e->getAwsErrorCode() == 'InvalidParameterCombination'){
+                    $this->results['LatestInstanceGeneration'] = [-1, '**DEPRECIATED**' . $this->db['DBInstanceClass']];
+                }
+                $this->results['LatestInstanceGeneration'] = [-1, '_ERROR_'];    
+                return;
             }
-            
-            $instTypes = array_values(array_unique($arr));
-            $CONFIG->set($key, $instTypes);
-            
-            $compressedLists = [];
-            foreach($instTypes as $instType){
-                $temp = explode('.', $instType);
-                $compressedLists[ $temp[1][0] ] = substr($temp[1], 1, 1);
-            }
-            
-            $CONFIG->set($key . '::zip', $compressedLists);
         }else{
             $compressedLists = $CONFIG->get($key . '::zip');
         }
