@@ -218,7 +218,14 @@ class rds_common extends evaluator{
                'EngineVersion' => $engineVersion
             ]);
             
-            $details = $versions->get('DBEngineVersions')[0];
+            $version = $versions->get('DBEngineVersions');
+            if(empty($version)){
+                $this->results['EngineVersionMinor'] = [-1, "**DEPRECIATED**"];
+                $this->results['EngineVersionMajor'] = [-1, "**DEPRECIATED**"];
+                return;
+            }
+
+            $details = $version[0];
             $CONFIG->set($key, $details);
         }
 
