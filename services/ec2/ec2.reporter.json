@@ -233,7 +233,7 @@
             "[Best practices for Amazon EC2]<https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-best-practices.html>"    
         ]
     },
-    "SGSEnsitivePortOpenToAll": {
+    "SGSensitivePortOpenToAll": {
         "category": "S",
         "^description": "Sensitive ports open to all: {$COUNT} of security group have sensitive ports (DNS, MongoDB, MSSQL, MySQL, NFS, OracleDB PostgreSQL, RDP, SMTP, SMTPS, SSH) open to all IPs. Recommend to open only for required IP.",
         "downtime": 0,
