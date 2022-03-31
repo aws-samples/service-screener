@@ -53,7 +53,7 @@
 	},
 	"consoleLastAccess365": {
 		"category": "S",
-		"^description": "{$COUNT} IAM users have not accessed the AWS console in more than 360 days. Please identify the need for these IAM users to access the console and delete them if not needed.",
+		"^description": "{$COUNT} IAM users have not accessed the AWS console in more than 365 days. Please identify the need for these IAM users to access the console and delete them if not needed.",
 		"shortDesc": "Validate IAM user console access.",
 		"criticality": "H",
 		"downtime": 0,
