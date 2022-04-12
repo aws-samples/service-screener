@@ -105,9 +105,8 @@ class ec2_asg extends evaluator{
             $templateId = $templateInfo['LaunchTemplateId'];
             $templateVersion = $templateInfo['Version'];
             
-            
             $templateResult = $this->ec2Client->describeLaunchTemplateVersions([
-                'LaunchTemplateIds' => $templateId,
+                'LaunchTemplateId' => $templateId,
                 'Versions' => [$templateVersion]
             ]);
             
