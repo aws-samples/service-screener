@@ -46,7 +46,7 @@ class ec2_ebs extends evaluator{
         return;
     }
     
-    function __checkOutdatedSnapshot(){
+    function __checkSnapshot(){
         $block = $this->block;
         $volumeId = $block['VolumeId'];
         
