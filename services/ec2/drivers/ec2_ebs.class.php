@@ -46,19 +46,7 @@ class ec2_ebs extends evaluator{
         return;
     }
     
-    function __checkSnapshotBlock(){
-        $block = $this->block;
-        
-        if($block['SnapshotId']){
-            $this->results['EBSSnapshot'] = [1, $block['SnapshotId']];
-        }else{
-            $this->results['EBSSnapshot'] = [-1, $block['SnapshotId']];
-        }
-        
-        return;
-    }
-    
-    function __checkOutdatedSnapshot(){
+    function __checkSnapshot(){
         $block = $this->block;
         $volumeId = $block['VolumeId'];
         
@@ -82,6 +70,8 @@ class ec2_ebs extends evaluator{
             }
             
             $this->results['EBSUpToDateSnapshot'] = [-1, ''];
+        }else{
+            $this->results['EBSSnapshot'] = [-1, $block['SnapshotId']];
         }
         
         return;
