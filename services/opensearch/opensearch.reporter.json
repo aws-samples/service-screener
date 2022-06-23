@@ -1,0 +1,444 @@
+{
+    "ResourceAccessPolicy": {
+        "category": "S",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 0,
+        "additionalCost": 0,
+        "criticality": "H",
+        "needFullTest": 1,
+        "shortDesc": "Apply a restrictive resource-based access policy to the domain",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html#ac-types-resource>"    
+        ]
+    },
+    "FineGrainedAccessControl": {
+        "category": "S",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 1,
+        "additionalCost": 0,
+        "criticality": "H",
+        "needFullTest": 1,
+        "shortDesc": "Follow the principle of least privilege when granting access to the configuration API and the OpenSearch APIs.",
+        "ref": [
+            "[]<>"    
+        ]
+    },
+    "ReplicaShard": {
+        "category": "R",
+        "^description": "So what is the right number of replicas? If you have a cluster that has num_nodes nodes, num_primaries primary shards in total and if you want to be able to cope with max_failures node failures at once at most, then the right number of replicas for you is max(max_failures, ceil(num_nodes / num_primaries) - 1).",
+        "downtime": 0,
+        "slowness": -1,
+        "additionalCost": 1,
+        "criticality": "H",
+        "needFullTest": 0,
+        "shortDesc": "Configure at least one replica, the OpenSearch default, for each index.",
+        "ref": [
+            "[]<>"    
+        ]
+    },
+    "DedicatedMasterNodes": {
+        "category": "R",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 1,
+        "additionalCost": 1,
+        "criticality": "H",
+        "needFullTest": 0,
+        "shortDesc": "We recommend that you add three dedicated master nodes to each production OpenSearch Service domain.",
+        "ref": [
+            "[]<>"    
+        ]
+    },
+    "AvailabilityZones": {
+        "category": "R",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 1,
+        "additionalCost": 0,
+        "criticality": "H",
+        "needFullTest": 0,
+        "shortDesc": "Distribute nodes across two or three Availability Zones in the same Region",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-multiaz.html>"    
+        ]
+    },
+    "OpenSearchVersion": {
+        "category": "PR",
+        "^description": "",
+        "downtime": -1,
+        "slowness": 1,
+        "additionalCost": 0,
+        "criticality": "L",
+        "needFullTest": 1,
+        "shortDesc": "",
+        "ref": [
+            "[]<>"    
+        ]
+    },
+    "ServiceSoftwareVersion": {
+        "category": "PS",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 1,
+        "additionalCost": 0,
+        "criticality": "M",
+        "needFullTest": -1,
+        "shortDesc": "",
+        "ref": [
+            "[]<>"    
+        ]
+    },
+    "StorageUtilisation": {
+        "category": "CR",
+        "^description": "",
+        "downtime": -1,
+        "slowness": 1,
+        "additionalCost": -1,
+        "criticality": "M",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<>"    
+        ]
+    },
+    "ShardSize": {
+        "category": "P",
+        "^description": "",
+        "downtime": -1,
+        "slowness": -1,
+        "additionalCost": -1,
+        "criticality": "L",
+        "needFullTest": -1,
+        "shortDesc": "",
+        "ref": [
+            "[]<>"    
+        ]
+    },
+    "ShardsPerGigHeapPerNode": {
+        "category": "P",
+        "^description": "",
+        "downtime": -1,
+        "slowness": -1,
+        "additionalCost": 0,
+        "criticality": "I",
+        "needFullTest": -1,
+        "shortDesc": "",
+        "ref": [
+            "[]<>"    
+        ]
+    },
+    "InstanceVersion": {
+        "category": "CP",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 1,
+        "additionalCost": 0,
+        "criticality": "L",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<>"    
+        ]
+    },
+    "MinDataNodes": {
+        "category": "PS",
+        "^description": "",
+        "downtime": -1,
+        "slowness": -1,
+        "additionalCost": 0,
+        "criticality": "M",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/sizing-domains.html#:~:text=Step%201%3A%20Make%20an%20initial%20estimate>"    
+        ]
+    },
+    "CloudWatchAlarms": {
+        "category": "O",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 0,
+        "additionalCost": -1,
+        "criticality": "H",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cloudwatch-alarms.html>"    
+        ]
+    },
+    "ClusterHealth": {
+        "category": "RP",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 0,
+        "additionalCost": 0,
+        "criticality": "H",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-cloudwatchmetrics.html#managedomains-cloudwatchmetrics-cluster-metrics>"    
+        ]
+    },
+    "ClusterStatus": {
+        "category": "RP",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 0,
+        "additionalCost": 0,
+        "criticality": "H",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cloudwatch-alarms.html>"    
+        ]
+    },
+    "InstanceHealth": {
+        "category": "RP",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 0,
+        "additionalCost": 0,
+        "criticality": "H",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-cloudwatchmetrics.html#managedomains-cloudwatchmetrics-instance-metrics>"    
+        ]
+    },
+    "MasterNodeHealth": {
+        "category": "RP",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 0,
+        "additionalCost": 0,
+        "criticality": "H",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-cloudwatchmetrics.html#managedomains-cloudwatchmetrics-master-node-metrics>"    
+        ]
+    },
+    "MasterNodeType": {
+        "category": "P",
+        "^description": "",
+        "downtime": -1,
+        "slowness": 1,
+        "additionalCost": -1,
+        "criticality": "I",
+        "needFullTest": 1,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-dedicatedmasternodes.html#:~:text=Recommended%20minimum%20dedicated%20master%20instance%20type>"    
+        ]
+    },
+    "TSeriesForProduction": {
+        "category": "PR",
+        "^description": "",
+        "downtime": -1,
+        "slowness": -1,
+        "additionalCost": 1,
+        "criticality": "M",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/bp.html#:~:text=Don%27t%20use%20T2%20or%20t3.small%20instances%20for%20production%20domains%3B%20they%20can%20become%20unstable%20under%20sustained%20heavy%20load.%20t3.medium%20instances%20are%20an%20option%20for%20small%20production%20workloads%20(both%20as%20data%20nodes%20and%20dedicated%20master%20nodes).>"    
+        ]
+    },
+    "ShardsPerNode": {
+        "category": "P",
+        "^description": "",
+        "downtime": -1,
+        "slowness": -1,
+        "additionalCost": -1,
+        "criticality": "I",
+        "needFullTest": -1,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/bp.html#:~:text=Have%20no%20more%20than%201%2C000%20shards%20on%20any%20data%20node.%20This%20limit%20is%20the%20default%20in%20OpenSearch%20and%20Elasticsearch%207.x%20and%20later.%20For%20a%20more%20nuanced%20guideline%2C%20see%20Choosing%20the%20number%20of%20shards.>"    
+        ]
+    },
+    "DomainWithinVPC": {
+        "category": "S",
+        "^description": "",
+        "downtime": 1,
+        "slowness": 0,
+        "additionalCost": -1,
+        "criticality": "M",
+        "needFullTest": 1,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html>"    
+        ]
+    },
+    "EncyptionAtRest": {
+        "category": "S",
+        "^description": "",
+        "downtime": -1,
+        "slowness": -1,
+        "additionalCost": 0,
+        "criticality": "I",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html>"    
+        ]
+    },
+    "NodeToNodeEncryption": {
+        "category": "S",
+        "^description": "",
+        "downtime": -1,
+        "slowness": -1,
+        "additionalCost": 0,
+        "criticality": "I",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html>"    
+        ]
+    },
+    "SearchSlowLogs": {
+        "category": "P",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 1,
+        "additionalCost": 1,
+        "criticality": "M",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html>"    
+        ]
+    },
+    "QueryTimeout": {
+        "category": "PR",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 0,
+        "additionalCost": 0,
+        "criticality": "L",
+        "needFullTest": 1,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html>"    
+        ]
+    },
+    "IndexStateManagement": {
+        "category": "O",
+        "^description": "",
+        "downtime": 0,
+        "slowness": -1,
+        "additionalCost": 0,
+        "criticality": "I",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ism.html>"    
+        ]
+    },
+    "BulkIndexQueries": {
+        "category": "P",
+        "^description": "",
+        "downtime": 0,
+        "slowness": -1,
+        "additionalCost": 0,
+        "criticality": "M",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/audit-logs.html>"    
+        ]
+    },
+    "IngestThreads": {
+        "category": "P",
+        "^description": "",
+        "downtime": -1,
+        "slowness": -1,
+        "additionalCost": 0,
+        "criticality": "M",
+        "needFullTest": 1,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ism.html>"    
+        ]
+    },
+    "IndexRefreshInterval": {
+        "category": "P",
+        "^description": "",
+        "downtime": 0,
+        "slowness": -1,
+        "additionalCost": 0,
+        "criticality": "I",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ism.html>"    
+        ]
+    },
+    "AutoTune": {
+        "category": "P",
+        "^description": "",
+        "downtime": 0,
+        "slowness": -1,
+        "additionalCost": 0,
+        "criticality": "M",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ism.html>"    
+        ]
+    },
+    "IndexTemplate": {
+        "category": "O",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 0,
+        "additionalCost": 0,
+        "criticality": "I",
+        "needFullTest": 0,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://opensearch.org/docs/latest/opensearch/index-templates/>"    
+        ]
+    },
+    "OptimizedThreadPool": {
+        "category": "",
+        "^description": "",
+        "downtime": ,
+        "slowness": ,
+        "additionalCost": 0,
+        "criticality": "I",
+        "needFullTest": ,
+        "shortDesc": "",
+        "ref": [
+            "[]<https://linuxhint.com/elasticsearch-best-practices/#:~:text=Optimized%20Thread%2Dpool>"    
+        ]
+    },
+    "UltraWarm": {
+        "category": "C",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 1,
+        "additionalCost": 0,
+        "criticality": "I",
+        "needFullTest": -1,
+        "shortDesc": "",
+        "ref": [
+            "[]<>"    
+        ]
+    },
+    "ColdStorage": {
+        "category": "C",
+        "^description": "",
+        "downtime": 0,
+        "slowness": 1,
+        "additionalCost": 0,
+        "criticality": "I",
+        "needFullTest": -1,
+        "shortDesc": "",
+        "ref": [
+            "[]<>"    
+        ]
+    }
+}
