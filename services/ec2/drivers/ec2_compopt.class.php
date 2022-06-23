@@ -9,11 +9,25 @@ class ec2_compopt extends evaluator{
     
     function __checkComputeOptimizerEnabled(){
         $compOptClient = $this->compOptClient;
-        $result = $compOptClient ->getEnrollmentStatus();
         
-        if($result['status'] != 'Active'){
-            $this->results['ComputeOptimizerEnabled'] = [-1, $result['status']];
+        
+        ## User SSM to check service exist
+        // /aws/service/global-infrastructure/regions/ap-southeast-1/services/compute-optimizer
+        
+        try{
+            $result = $compOptClient ->getEnrollmentStatus();
+            if($result['status'] != 'Active'){
+                $this->results['ComputeOptimizerEnabled'] = [-1, $result['status']];
+            }
+        }catch(Exception $e){
+            
+            print_r('start');
+            print_r($e->getCode());
+            print_r('end');
         }
+        
+        
+        
         
         return;
     }
