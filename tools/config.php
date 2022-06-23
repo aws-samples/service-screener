@@ -77,6 +77,8 @@ class Config{
         global $CONFIG, $PHPSDK_CRED_PROVIDER, $PHPSDK_CRED_PROFILE;
         $stsInfo = [];
         
+        
+
         __info(" -- Acquiring identify info...");
         try{
             $__AWS_CONFIG['version'] = self::AWS_SDK['STSCLIENT_VERS'];

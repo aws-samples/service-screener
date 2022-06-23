@@ -15,5 +15,5 @@
 brew install php@7.4
 php -v # make sure it is version 7.4 
 
-## Then you may follow the official instruction to install composer & aws-php-sdk
+## Then you may follow the official instruction to install composer & php-sdk
 ```
