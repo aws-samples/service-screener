@@ -17,6 +17,7 @@ class Config{
         'STSCLIENT_VERS' => '2011-06-15',
         'CLOUDWATCHCLIENT_VERS' => '2010-08-01',
         'AOSCLIENT_VERS' => '2021-01-01',
+        'EFSCLIENT_VERS' => '2015-02-01',
         'signature_version' => 'v4'
     ];
     
@@ -41,7 +42,7 @@ class Config{
         "services" => [
             "required" => false,
             "emptymsg" => "Missing --services, using default value: \$defaultValue",
-            "default" => "rds,ec2,iam,s3"
+            "default" => "rds,ec2,iam,s3,efs"
         ],
         "debug" => [
             "required" => false,
