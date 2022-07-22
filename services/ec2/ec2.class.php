@@ -186,11 +186,11 @@ class ec2 extends service{
         // $this->ssmClient->
         $region = $this->__AWS_OPTIONS['region'];
         $compOptPath = "/aws/service/global-infrastructure/regions/".$region."/services/compute-optimizer";
-        $result = $this->ssmClient->getParametersByPath([
+        $compOptCheck = $this->ssmClient->getParametersByPath([
             'Path' => $compOptPath
         ]);
         
-        if(isset($result['Parameters']) && sizeof($result['Parameters']) > 0){
+        if(isset($compOptCheck['Parameters']) && sizeof($compOptCheck['Parameters']) > 0){
             $driver = 'ec2_compopt';
             if (class_exists($driver)){
                 __info('... (Compute Optimizer) inspecting');
