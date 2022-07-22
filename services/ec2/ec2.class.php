@@ -191,17 +191,15 @@ class ec2 extends service{
         ]);
         
         if(isset($result['Parameters']) && sizeof($result['Parameters']) > 0){
-            print_r('ComputeOptimizer Exist');
-        }
-        
-        $driver = 'ec2_compopt';
-        if (class_exists($driver)){
-            __info('... (Compute Optimizer) inspecting');
-            $obj = new $driver($this->compOptClient);
-            $obj->run();
-            
-            $objs['ComputeOptimizer'] = $obj->getInfo();
-            unset($obj);
+            $driver = 'ec2_compopt';
+            if (class_exists($driver)){
+                __info('... (Compute Optimizer) inspecting');
+                $obj = new $driver($this->compOptClient);
+                $obj->run();
+                
+                $objs['ComputeOptimizer'] = $obj->getInfo();
+                unset($obj);
+            }
         }
         
         $driver = 'ec2_costExplorer';
