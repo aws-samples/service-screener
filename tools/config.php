@@ -42,7 +42,7 @@ class Config{
         "services" => [
             "required" => false,
             "emptymsg" => "Missing --services, using default value: \$defaultValue",
-            "default" => "rds,ec2,iam,s3"
+            "default" => "rds,ec2,iam,s3,efs"
         ],
         "debug" => [
             "required" => false,
