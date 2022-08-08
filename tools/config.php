@@ -17,6 +17,7 @@ class Config{
         'STSCLIENT_VERS' => '2011-06-15',
         'CLOUDWATCHCLIENT_VERS' => '2010-08-01',
         'SSMCLIENT_VERS' => '2014-11-06',
+        'AOSCLIENT_VERS' => '2021-01-01',
         'signature_version' => 'v4'
     ];
     
