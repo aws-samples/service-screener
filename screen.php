@@ -55,7 +55,8 @@ foreach($services as $service){
     scanByService($service, $regions, $scanInParallel);
 };
 
-while(pcntl_waitpid(0, $status) != -1);
+if($scanInParallel)
+    while(pcntl_waitpid(0, $status) != -1);
 
 $files = scandir(FORK_DIR);
 $scanned=[

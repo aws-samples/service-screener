@@ -1,4 +1,17 @@
 {
+    "MockTest": {
+        "category": "S",
+        "^description": "Mock Test",
+        "shortDesc": "Mock Test",
+        "criticality": "L",
+        "downtime": 0,
+        "slowness": 0,
+        "additionalCost": 0,
+        "needFullTest": 0,
+        "ref": [
+            "[AWS Docs]<https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html>"   
+        ]
+    },
     "ResourceAccessPolicy": {
         "category": "S",
         "^description": "",
@@ -64,7 +77,7 @@
             "[]<https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-multiaz.html>"    
         ]
     },
-    "OpenSearchVersion": {
+    "EngineVersion": {
         "category": "PR",
         "^description": "",
         "downtime": -1,
@@ -405,11 +418,11 @@
     "OptimizedThreadPool": {
         "category": "",
         "^description": "",
-        "downtime": ,
-        "slowness": ,
+        "downtime": -1,
+        "slowness": -1,
         "additionalCost": 0,
         "criticality": "I",
-        "needFullTest": ,
+        "needFullTest": 1,
         "shortDesc": "",
         "ref": [
             "[]<https://linuxhint.com/elasticsearch-best-practices/#:~:text=Optimized%20Thread%2Dpool>"    
