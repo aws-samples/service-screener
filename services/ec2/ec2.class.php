@@ -7,6 +7,7 @@ use Aws\ElasticLoadBalancingV2\ElasticLoadBalancingV2Client;
 use Aws\ElasticLoadBalancing\ElasticLoadBalancingClient;
 use Aws\AutoScaling\AutoScalingClient;
 use Aws\CostExplorer\CostExplorerClient;
+use Aws\Ssm\SsmClient;
 
 class ec2 extends service{
     const EC2_SDK_VERSION = '2016-11-15';
@@ -15,6 +16,7 @@ class ec2 extends service{
     public $elbClient;
     public $elbClassicClient;
     public $asgClient;
+    public $ssmClient;
     
     function __construct($region){
         parent::__construct($region);
@@ -36,6 +38,9 @@ class ec2 extends service{
         
         $this->__AWS_OPTIONS['version'] = CONFIG::AWS_SDK['COSTEXPLORERCLIENT_VERS'];
         $this->costExplorerClient = new CostExplorerClient($this->__AWS_OPTIONS);
+        
+        $this->__AWS_OPTIONS['version'] = CONFIG::AWS_SDK['SSMCLIENT_VERS'];
+        $this->ssmClient = new SsmClient($this->__AWS_OPTIONS);
         
         $this->__loadDrivers();
     }
@@ -177,14 +182,24 @@ class ec2 extends service{
         $objs = [];
         $securityGroups = [];
         
-        $driver = 'ec2_compopt';
-        if (class_exists($driver)){
-            __info('... (Compute Optimizer) inspecting');
-            $obj = new $driver($this->compOptClient);
-            $obj->run();
-            
-            $objs['ComputeOptimizer'] = $obj->getInfo();
-            unset($obj);
+        ## Check Compute Optimize available for the region
+        // $this->ssmClient->
+        $region = $this->__AWS_OPTIONS['region'];
+        $compOptPath = "/aws/service/global-infrastructure/regions/".$region."/services/compute-optimizer";
+        $compOptCheck = $this->ssmClient->getParametersByPath([
+            'Path' => $compOptPath
+        ]);
+        
+        if(isset($compOptCheck['Parameters']) && sizeof($compOptCheck['Parameters']) > 0){
+            $driver = 'ec2_compopt';
+            if (class_exists($driver)){
+                __info('... (Compute Optimizer) inspecting');
+                $obj = new $driver($this->compOptClient);
+                $obj->run();
+                
+                $objs['ComputeOptimizer'] = $obj->getInfo();
+                unset($obj);
+            }
         }
         
         $driver = 'ec2_costExplorer';

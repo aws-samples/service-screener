@@ -9,8 +9,8 @@ class ec2_compopt extends evaluator{
     
     function __checkComputeOptimizerEnabled(){
         $compOptClient = $this->compOptClient;
-        $result = $compOptClient ->getEnrollmentStatus();
         
+        $result = $compOptClient ->getEnrollmentStatus();
         if($result['status'] != 'Active'){
             $this->results['ComputeOptimizerEnabled'] = [-1, $result['status']];
         }
