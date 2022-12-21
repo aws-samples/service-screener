@@ -31,6 +31,7 @@ $CONFIG->set("__AWS_OPTIONS", $__AWS_OPTIONS);
 
 $regions = explode(',', $__cli_options['region']);
 $services = explode(',', $__cli_options['services']);
+$bucket = $__cli_options['bucket'];
 
 $contexts = [];
 
@@ -125,6 +126,15 @@ $dashPB->buildPage();
 exec('cd adminlte; zip -r output.zip html; mv output.zip ../output.zip');
 __info("Pages generated, download \033[1;42moutput.zip\033[0m to view");
 __info("CloudShell user, you may use this path: \033[1;42m~/service-screener/output.zip\033[0m");
+
+// Upload to S3 Bucket
+if ($bucket) {
+    __info("*** Uploading to S3: $bucket ***");
+    $uploader = new Uploader($tempConfig['region'], $bucket);
+    $uploader->uploadZip(__DIR__ . '/output.zip');
+    __info("*** Upload completed ***");
+    __info("You may visit the report at: \033[1;42mhttp://$bucket.s3-website-$tempConfig[region].amazonaws.com\033[0m");
+}
 
 if($feedbackFlag){    
     __info("*** Sending feedback ***");

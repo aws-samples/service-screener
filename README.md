@@ -53,6 +53,9 @@ screener --region ap-southeast-1,us-east-1
 
 ## Both Singapore & N. Virginia region with Amazon RDS & AWS IAM
 screener --region ap-southeast-1,us-east-1 --services rds,iam
+
+## Uploading the result to a S3 bucket with static website hosting enabled
+screener --region ap-southeast-1,us-east-1 --services rds,iam --bucket service-screener-<YOUR_ACCOUNT_ID>
 ```
 
 ![Get Report](https://d39bs20xyg7k53.cloudfront.net/services-screener/p3-getreport.gif)
