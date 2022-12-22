@@ -5,9 +5,12 @@ $__cli_options = ArguParser::Load();
 
 $debugFlag = $__cli_options['debug'];
 $feedbackFlag = $__cli_options['feedback'];
+$bucketFlag = $__cli_options['bucket'];
 $testmode = $__cli_options['test'];
+
 $DEBUG = ( in_array($debugFlag, CLI_TRUE_KEYWORD_ARRAY) || $debugFlag === true) ? true : false;
 $feedbackFlag = ( in_array($feedbackFlag, CLI_TRUE_KEYWORD_ARRAY) || $feedbackFlag === true) ? true : false;
+$bucketFlag = ( in_array($bucketFlag, CLI_TRUE_KEYWORD_ARRAY) || $bucketFlag === true) ? true : false;
 $testmode = ( in_array($testmode, CLI_TRUE_KEYWORD_ARRAY) || $testmode === true) ? true : false;
 
 $env = $__cli_options['env'];
@@ -134,12 +137,11 @@ if ($bucket) {
 
     // Splitting the if statements does not impact time complexity, but aesthetically looks pleasing to read.
     if ($confirm == 'y') {
-        __info("*** Uploading to S3: $bucket ***");
         $bucket_region = $regions[0]; // use the first region as the bucket region
         $uploader = new Uploader($bucket_region, $bucket); // returns boolean
 
         if ($uploader) {
-            __info("Uploading files to S3 bucket: $bucket (region: $bucket_region)");
+            __info("*** Uploading files to S3 bucket: $bucket (region: $bucket_region)");
             $uploader->uploadFromFolder(__DIR__ . '/adminlte/html');
             __info("*** Upload completed ***");
             __info("You may visit the report at: \033[1;42mhttp://$bucket.s3-website-$bucket_region.amazonaws.com\033[0m");
