@@ -22,11 +22,18 @@ class Uploader {
         }
     }
 
-    function _createBucket() {
-        $this->s3Client->createBucket([
-            'Bucket' => $this->bucket,
-            'LocationConstraint' => $this->region
-        ]);
+    function _createBucket(): bool {
+        try {
+            $this->s3Client->createBucket([
+                'Bucket' => $this->bucket,
+                'LocationConstraint' => $this->region
+            ]);
+            return true;
+        } catch (Exception $e) {
+            __info('Amazon S3 create bucket is getting following error');
+            __info($e->getAwsErrorMessage());
+            return false;
+        }
     }
 
     function _enableStaticWebsite() {

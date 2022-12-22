@@ -136,10 +136,14 @@ if ($bucket) {
     if ($confirm == 'y') {
         __info("*** Uploading to S3: $bucket ***");
         $bucket_region = $regions[0]; // use the first region as the bucket region
-        $uploader = new Uploader($bucket_region, $bucket);
-        $uploader->uploadFromFolder(__DIR__ . '/adminlte/html');
-        __info("*** Upload completed ***");
-        __info("You may visit the report at: \033[1;42mhttp://$bucket.s3-website-$bucket_region.amazonaws.com\033[0m");
+        $uploader = new Uploader($bucket_region, $bucket); // returns boolean
+
+        if ($uploader) {
+            __info("Uploading files to S3 bucket: $bucket (region: $bucket_region)");
+            $uploader->uploadFromFolder(__DIR__ . '/adminlte/html');
+            __info("*** Upload completed ***");
+            __info("You may visit the report at: \033[1;42mhttp://$bucket.s3-website-$bucket_region.amazonaws.com\033[0m");
+        }
     }
     
     if ($confirm == 'n') {
