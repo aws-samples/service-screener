@@ -136,7 +136,7 @@ if ($bucket) {
     $confirm = readline("Are you sure you want to continue? (y/n): ");
 
     // Splitting the if statements does not impact time complexity, but aesthetically looks pleasing to read.
-    if ($confirm == 'y') {
+    if (strtolower($confirm) == 'y') {
         $bucket_region = $regions[0]; // use the first region as the bucket region
         $uploader = new Uploader($bucket_region, $bucket); // returns boolean
 
@@ -148,11 +148,11 @@ if ($bucket) {
         }
     }
     
-    if ($confirm == 'n') {
+    if (strtolower($confirm) == 'n') {
         __info("You have chosen not to upload the report to S3.");
     }
 
-    if ($confirm != 'y' && $confirm != 'n') {
+    if (strtolower($confirm) != 'y' && $confirm != 'n') {
         __info("You have chosen not to upload the report to S3. Continuing...");
     }
 }
