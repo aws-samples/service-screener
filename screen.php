@@ -127,13 +127,28 @@ exec('cd adminlte; zip -r output.zip html; mv output.zip ../output.zip');
 __info("Pages generated, download \033[1;42moutput.zip\033[0m to view");
 __info("CloudShell user, you may use this path: \033[1;42m~/service-screener/output.zip\033[0m");
 
-// Upload to S3 Bucket
 if ($bucket) {
-    __info("*** Uploading to S3: $bucket ***");
-    $uploader = new Uploader($tempConfig['region'], $bucket);
-    $uploader->uploadZip(__DIR__ . '/output.zip');
-    __info("*** Upload completed ***");
-    __info("You may visit the report at: \033[1;42mhttp://$bucket.s3-website-$tempConfig[region].amazonaws.com\033[0m");
+    __info("You have specified a 'bucket' parameter, the report will be uploaded to S3.");
+    __info("The report will be available through public internet, please ensure you understand the risk of exposing the report to the internet. You will be fully RESPONSIBLE on this data.");
+    $confirm = readline("Are you sure you want to continue? (y/n): ");
+
+    // Splitting the if statements does not impact time complexity, but aesthetically looks pleasing to read.
+    if ($confirm == 'y') {
+        __info("*** Uploading to S3: $bucket ***");
+        $bucket_region = $regions[0]; // use the first region as the bucket region
+        $uploader = new Uploader($bucket_region, $bucket);
+        $uploader->uploadFromFolder(__DIR__ . '/adminlte/html');
+        __info("*** Upload completed ***");
+        __info("You may visit the report at: \033[1;42mhttp://$bucket.s3-website-$bucket_region.amazonaws.com\033[0m");
+    }
+    
+    if ($confirm == 'n') {
+        __info("You have chosen not to upload the report to S3.");
+    }
+
+    if ($confirm != 'y' && $confirm != 'n') {
+        __info("You have chosen not to upload the report to S3. Continuing...");
+    }
 }
 
 if($feedbackFlag){    

@@ -14,6 +14,77 @@ Service Screener is a tool that allows AWS customers to automate checks on their
 
 ![Launch CloudShell](https://d39bs20xyg7k53.cloudfront.net/services-screener/p1-cloudshell.gif)
 
+## IAM Policy for S3 Bucket creation
+If you are creating an Amazon S3 bucket manually, you are required to create an IAM policy for the bucket. This IAM Policy is based on PoLP (Principle of Least Privilege) and allows the bucket to be created and the contents of the bucket to be read.
+- **Example 1** (Using AWS CloudShell)
+    - By default, AWS CloudShell inherits your IAM User's permissions. However, if you still need fine-grained access to create a new S3 Bucket, you can create a new IAM Policy in the IAM console and copy the below JSON into the policy editor
+    ```
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "AllowBucketCreation",
+                "Effect": "Allow",
+                "Action": [
+                    "s3:CreateBucket",
+                    "s3:ListAllMyBuckets"
+                ],
+                "Resource": "*"
+            }
+        ]
+    }
+    ```
+
+
+- **Example 2** (Without AWS CloudShell)
+    - If you are not using the AWS CloudShell or do not have sufficient permission sets attached to your IAM User, you can create a new IAM Policy in the IAM console by copying the below JSON into the policy editor and attach it to your IAM user
+    ```
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "AllowBucketCreation",
+                "Effect": "Allow",
+                "Action": [
+                    "s3:CreateBucket",
+                    "s3:ListAllMyBuckets"
+                ],
+                "Resource": "*"
+            },
+            {
+                "Sid": "AllowBucketListing",
+                "Effect": "Allow",
+                "Action": "s3:ListBucket",
+                "Resource": "*"
+            },
+            {
+                "Sid": "AllowBucketContentListing",
+                "Effect": "Allow",
+                "Action": "s3:GetObject",
+                "Resource": "*"
+            },
+            {
+                "Sid": "AllowPutObject",
+                "Effect": "Allow",
+                "Action": "s3:PutObject",
+                "Resource": "*"
+            },
+            {
+                "Sid": "AllowGetObjectAcl",
+                "Effect": "Allow",
+                "Action": "s3:GetObjectAcl",
+                "Resource": "*"
+            },
+            {
+                "Sid": "AllowPutObjectAcl",
+                "Effect": "Allow",
+                "Action": "s3:PutObjectAcl",
+                "Resource": "*"
+            }
+        ]
+    }
+    ```
+
 ## Installing service-screener
 In the AWS CloudShell terminal, run this to install php:
 ```bash

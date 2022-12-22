@@ -7,6 +7,7 @@ use AWS\S3\Exception;
 class Uploader {
     private $s3Client;
     private $bucket;
+    private $region;
 
     public function __construct($region, $bucket) {
         $this->region = $region;
@@ -52,35 +53,26 @@ class Uploader {
         return false;
     }
 
-    function uploadZip($file) {
-        $zip = new ZipArchive;
-        $res = $zip->open($file);
+    function uploadFromFolder($folder) {
+        try {
+            $this->s3Client->uploadDirectory($folder, $this->bucket, null);
 
-        if ($res === TRUE) {
-            $zip->extractTo('/tmp');
-            $zip->close();
-            
-            try {
-                $this->s3Client->uploadDirectory('/tmp/html', $this->bucket, null);
-
-                // S3 list all objects and set ACL
-                $objects = $this->s3Client->getIterator('ListObjects', [
-                    'Bucket' => $this->bucket
+            // S3 list all objects and set ACL
+            $objects = $this->s3Client->getIterator('ListObjects', [
+                'Bucket' => $this->bucket
+            ]);
+            foreach ($objects as $object) {
+                $this->s3Client->putObjectAcl([
+                    'Bucket' => $this->bucket,
+                    'Key' => $object['Key'],
+                    'ACL' => 'public-read'
                 ]);
-                foreach ($objects as $object) {
-                    $this->s3Client->putObjectAcl([
-                        'Bucket' => $this->bucket,
-                        'Key' => $object['Key'],
-                        'ACL' => 'public-read'
-                    ]);
-                }
-                
-                $this->_enableStaticWebsite();
-            } catch (Exception $e) {
-                echo $e->getMessage();
             }
-        } else {
-            echo 'failed, code:' . $res;
+            
+            $this->_enableStaticWebsite();
+        } catch (Exception $e) {
+            __info('Amazon S3 upload is getting following error');
+            __info($e->getAwsErrorMessage());
         }
     }
 }

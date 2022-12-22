@@ -5,6 +5,7 @@ include_once(__DIR__ .'/arguParser.class.php');
 include_once(__DIR__ .'/reporter.class.php');
 include_once(__DIR__ .'/feedback.class.php');
 include_once(__DIR__ .'/policy.class.php');
+include_once(__DIR__ .'/uploader.class.php');
 
 function __pr($o){
     global $DEBUG;
