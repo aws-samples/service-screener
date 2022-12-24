@@ -7,11 +7,39 @@ $debugFlag = $__cli_options['debug'];
 $feedbackFlag = $__cli_options['feedback'];
 $bucketFlag = $__cli_options['bucket'];
 $testmode = $__cli_options['test'];
+$bucket = $__cli_options['bucket'];
 
 $DEBUG = ( in_array($debugFlag, CLI_TRUE_KEYWORD_ARRAY) || $debugFlag === true) ? true : false;
 $feedbackFlag = ( in_array($feedbackFlag, CLI_TRUE_KEYWORD_ARRAY) || $feedbackFlag === true) ? true : false;
 $bucketFlag = ( in_array($bucketFlag, CLI_TRUE_KEYWORD_ARRAY) || $bucketFlag === true) ? true : false;
 $testmode = ( in_array($testmode, CLI_TRUE_KEYWORD_ARRAY) || $testmode === true) ? true : false;
+
+# S3 upload specific variables
+$uploadToS3 = false;
+
+if ($bucket) {
+    __info("You have specified a 'bucket' parameter, the report will be uploaded to S3.");
+    __info("The report will be available through public internet, please ensure you understand the risk of exposing the report to the internet. You will be fully RESPONSIBLE on this data.");
+    $confirm = strtolower(readline("Please enter 'y' for yes, 'n' for no, or 'c' to continue without uploading the report to S3.: "));
+    
+    while($confirm != 'y' && $confirm != 'n' && $confirm != 'c') {
+        # If the user enters an invalid option, we will ask them again
+        __info("Invalid option. Please enter 'y' for yes, 'n' for no, or 'c' to continue without uploading the report to S3.");
+        $confirm = strtolower(readline("Are you sure you want to continue? (y/n/c): "));
+
+        if ($confirm == 'y') {
+            $uploadToS3 = true;
+        }
+        
+        if ($confirm == 'n') {
+            __info("You have chosen not to upload the report to S3.");
+        }
+    
+        if ($confirm == 'c') {
+            __info("You have chosen not to upload the report to S3. Continuing...");
+        }
+    }
+}
 
 $env = $__cli_options['env'];
 if($env == 'c9'){
@@ -34,7 +62,6 @@ $CONFIG->set("__AWS_OPTIONS", $__AWS_OPTIONS);
 
 $regions = explode(',', $__cli_options['region']);
 $services = explode(',', $__cli_options['services']);
-$bucket = $__cli_options['bucket'];
 
 $contexts = [];
 
@@ -130,30 +157,15 @@ exec('cd adminlte; zip -r output.zip html; mv output.zip ../output.zip');
 __info("Pages generated, download \033[1;42moutput.zip\033[0m to view");
 __info("CloudShell user, you may use this path: \033[1;42m~/service-screener/output.zip\033[0m");
 
-if ($bucket) {
-    __info("You have specified a 'bucket' parameter, the report will be uploaded to S3.");
-    __info("The report will be available through public internet, please ensure you understand the risk of exposing the report to the internet. You will be fully RESPONSIBLE on this data.");
-    $confirm = readline("Are you sure you want to continue? (y/n): ");
+if ($uploadToS3) {
+    $bucket_region = $regions[0]; // use the first region as the bucket region
+    $uploader = new Uploader($bucket_region, $bucket); // returns boolean
 
-    // Splitting the if statements does not impact time complexity, but aesthetically looks pleasing to read.
-    if (strtolower($confirm) == 'y') {
-        $bucket_region = $regions[0]; // use the first region as the bucket region
-        $uploader = new Uploader($bucket_region, $bucket); // returns boolean
-
-        if ($uploader) {
-            __info("*** Uploading files to S3 bucket: $bucket (region: $bucket_region)");
-            $uploader->uploadFromFolder(__DIR__ . '/adminlte/html');
-            __info("*** Upload completed ***");
-            __info("You may visit the report at: \033[1;42mhttp://$bucket.s3-website-$bucket_region.amazonaws.com\033[0m");
-        }
-    }
-    
-    if (strtolower($confirm) == 'n') {
-        __info("You have chosen not to upload the report to S3.");
-    }
-
-    if (strtolower($confirm) != 'y' && $confirm != 'n') {
-        __info("You have chosen not to upload the report to S3. Continuing...");
+    if ($uploader) {
+        __info("*** Uploading files to S3 bucket: $bucket (region: $bucket_region)");
+        $uploader->uploadFromFolder(__DIR__ . '/adminlte/html');
+        __info("*** Upload completed ***");
+        __info("You may visit the report at: \033[1;42mhttp://$bucket.s3-website-$bucket_region.amazonaws.com\033[0m");
     }
 }
 
