@@ -22,22 +22,22 @@ if ($bucket) {
     __info("The report will be available through public internet, please ensure you understand the risk of exposing the report to the internet. You will be fully RESPONSIBLE on this data.");
     $confirm = strtolower(readline("Please enter 'y' for yes, 'n' for no, or 'c' to continue without uploading the report to S3 : "));
     
-    while($confirm != 'y' && $confirm != 'n' && $confirm != 'c') {
+    while(!in_array($confirm, ['y', 'n', 'c'])) {
         # If the user enters an invalid option, we will ask them again
         __info("You have entered an invalid option.");
         $confirm = strtolower(readline("Please enter 'y' for yes, 'n' for no, or 'c' to continue without uploading the report to S3 : "));
+    }
 
-        if ($confirm == 'y') {
-            $uploadToS3 = true;
-        }
-        
-        if ($confirm == 'n') {
-            __info("You have chosen not to upload the report to S3.");
-        }
+    if ($confirm == 'y') {
+        $uploadToS3 = true;
+    }
     
-        if ($confirm == 'c') {
-            __info("You have chosen not to upload the report to S3. Continuing...");
-        }
+    if ($confirm == 'n') {
+        __info("You have chosen not to upload the report to S3.");
+    }
+
+    if ($confirm == 'c') {
+        __info("You have chosen not to upload the report to S3. Continuing...");
     }
 }
 
