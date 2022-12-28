@@ -68,6 +68,10 @@ class Config{
         "profile" => [
             "required" => false,
             "default" => false
+        ],
+        "bucket" => [
+            "required" => false,
+            "default" => false
         ]
     ];
     

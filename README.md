@@ -14,6 +14,32 @@ Service Screener is a tool that allows AWS customers to automate checks on their
 
 ![Launch CloudShell](https://d39bs20xyg7k53.cloudfront.net/services-screener/p1-cloudshell.gif)
 
+## IAM Policy for S3 Bucket creation
+If you are creating an Amazon S3 bucket manually, you are required to create an IAM policy for the bucket. This IAM Policy is based on PoLP (Principle of Least Privilege) and allows the bucket to be created and the contents of the bucket to be read.
+- **Example**
+    - If you do not have sufficient permission sets attached to your IAM User, you can create a new IAM Policy in the IAM console by copying the below JSON into the policy editor and attach it to your IAM user.
+    ```
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "",
+                "Effect": "Allow",
+                "Action": [
+                    "s3:CreateBucket",
+                    "s3:ListAllMyBuckets",
+                    "s3:ListBucket",
+                    "s3:GetObject",
+                    "s3:PutObject",
+                    "s3:GetObjectAcl",
+                    "s3:PutObjectAcl"
+                ],
+                "Resource": "arn:aws:s3:::<sample_bucket>/*"
+            }
+        ]
+    }
+    ```
+
 ## Installing service-screener
 In the AWS CloudShell terminal, run this to install php:
 ```bash
@@ -53,6 +79,9 @@ screener --region ap-southeast-1,us-east-1
 
 ## Both Singapore & N. Virginia region with Amazon RDS & AWS IAM
 screener --region ap-southeast-1,us-east-1 --services rds,iam
+
+## Uploading the result to a S3 bucket with static website hosting enabled
+screener --region ap-southeast-1,us-east-1 --services rds,iam --bucket service-screener-<YOUR_ACCOUNT_ID>
 ```
 
 ![Get Report](https://d39bs20xyg7k53.cloudfront.net/services-screener/p3-getreport.gif)
