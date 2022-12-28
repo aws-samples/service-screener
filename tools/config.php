@@ -61,9 +61,6 @@ class Config{
             "required" => false,
             "default" => false
         ],
-        "env" => [
-            "required" => false,
-            "default" => 'c9'
         ],
         "profile" => [
             "required" => false,

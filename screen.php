@@ -38,13 +38,6 @@ if ($bucket) {
     }
 }
 
-$env = $__cli_options['env'];
-if($env == 'c9'){
-    global $PHPSDK_CRED_PROVIDER;
-    $c9Credential = new Aws\Credentials\CustomC9CredentialProvider();
-    $PHPSDK_CRED_PROVIDER = Aws\Credentials\CredentialProvider::memoize($c9Credential);
-}
-
 $profile = $__cli_options['profile'];
 if(!empty($profile)){
     global $PHPSDK_CRED_PROFILE;
