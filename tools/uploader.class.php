@@ -60,7 +60,7 @@ class Uploader {
         return false;
     }
 
-    function uploadFromFolder($folder) {
+    function uploadFromFolder($folder): bool {
         try {
             $this->s3Client->uploadDirectory($folder, $this->bucket, null);
 
@@ -75,11 +75,13 @@ class Uploader {
                     'ACL' => 'public-read'
                 ]);
             }
-            
             $this->_enableStaticWebsite();
+
+            return true;
         } catch (Exception $e) {
-            __info('Amazon S3 upload is getting following error');
+            __info('Upload failed. Amazon S3 upload is getting following error');
             __info($e->getAwsErrorMessage());
+            return false;
         }
     }
 }

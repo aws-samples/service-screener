@@ -5,13 +5,11 @@ $__cli_options = ArguParser::Load();
 
 $debugFlag = $__cli_options['debug'];
 $feedbackFlag = $__cli_options['feedback'];
-$bucketFlag = $__cli_options['bucket'];
 $testmode = $__cli_options['test'];
 $bucket = $__cli_options['bucket'];
 
 $DEBUG = ( in_array($debugFlag, CLI_TRUE_KEYWORD_ARRAY) || $debugFlag === true) ? true : false;
 $feedbackFlag = ( in_array($feedbackFlag, CLI_TRUE_KEYWORD_ARRAY) || $feedbackFlag === true) ? true : false;
-$bucketFlag = ( in_array($bucketFlag, CLI_TRUE_KEYWORD_ARRAY) || $bucketFlag === true) ? true : false;
 $testmode = ( in_array($testmode, CLI_TRUE_KEYWORD_ARRAY) || $testmode === true) ? true : false;
 
 # S3 upload specific variables
@@ -21,12 +19,11 @@ if ($bucket) {
     __info("You have specified a 'bucket' parameter, the report will be uploaded to S3.");
     __info("The report will be available through public internet, please ensure you understand the risk of exposing the report to the internet. You will be fully RESPONSIBLE on this data.");
     $confirm = strtolower(readline("Please enter 'y' for yes, 'n' for no, or 'c' to continue without uploading the report to S3 : "));
-    
-    while(!in_array($confirm, ['y', 'n', 'c'])) {
-        # If the user enters an invalid option, we will ask them again
-        __info("You have entered an invalid option.");
-        $confirm = strtolower(readline("Please enter 'y' for yes, 'n' for no, or 'c' to continue without uploading the report to S3 : "));
-    }
+
+    do {
+        __warn("You have entered an invalid option. Please try again.");
+        $confirm = strtolower(readline("Please enter 'y' for yes, 'n' for no, or 'c' to continue without uploading the report to S3 : "));    
+    } while(!in_array($confirm, ['y', 'n', 'c']));
 
     if ($confirm == 'y') {
         $uploadToS3 = true;
@@ -163,9 +160,12 @@ if ($uploadToS3) {
 
     if ($uploader) {
         __info("*** Uploading files to S3 bucket: $bucket (region: $bucket_region)");
-        $uploader->uploadFromFolder(__DIR__ . '/adminlte/html');
-        __info("*** Upload completed ***");
-        __info("You may visit the report at: \033[1;42mhttp://$bucket.s3-website-$bucket_region.amazonaws.com\033[0m");
+        
+        $uploaded = $uploader->uploadFromFolder(__DIR__ . '/adminlte/html');
+        if ($uploaded) {
+            __info("*** Upload completed ***");
+            __info("You may visit the report at: \033[1;42mhttp://$bucket.s3-website-$bucket_region.amazonaws.com\033[0m");
+        }
     }
 }
 
