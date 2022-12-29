@@ -7,10 +7,13 @@ $debugFlag = $__cli_options['debug'];
 $feedbackFlag = $__cli_options['feedback'];
 $testmode = $__cli_options['test'];
 $bucket = $__cli_options['bucket'];
+$runmode = $__cli_options['mode'];
 
 $DEBUG = ( in_array($debugFlag, CLI_TRUE_KEYWORD_ARRAY) || $debugFlag === true) ? true : false;
 $feedbackFlag = ( in_array($feedbackFlag, CLI_TRUE_KEYWORD_ARRAY) || $feedbackFlag === true) ? true : false;
 $testmode = ( in_array($testmode, CLI_TRUE_KEYWORD_ARRAY) || $testmode === true) ? true : false;
+
+$runmode = in_array($runmode, ['api-raw', 'api-full', 'report']) ? $runmode : 'report';
 
 # S3 upload specific variables
 $uploadToS3 = false;
@@ -36,13 +39,6 @@ if ($bucket) {
     if ($confirm == 'c') {
         __info("You have chosen not to upload the report to S3. Continuing...");
     }
-}
-
-$env = $__cli_options['env'];
-if($env == 'c9'){
-    global $PHPSDK_CRED_PROVIDER;
-    $c9Credential = new Aws\Credentials\CustomC9CredentialProvider();
-    $PHPSDK_CRED_PROVIDER = Aws\Credentials\CredentialProvider::memoize($c9Credential);
 }
 
 $profile = $__cli_options['profile'];
@@ -75,7 +71,7 @@ $GLOBALRESOURCES = [];
     
 $overallTimeStart = microtime(true);
 
-exec('cd __fork; rm -f *.json');
+exec('cd __fork; rm -f *.json; echo > tail.txt');
 
 $scanInParallel = sizeof($services) > 1 ? true : false;
 foreach($services as $service){
@@ -93,10 +89,7 @@ $scanned=[
 ];
 $hasGlobal = false;
 foreach($files as $file){
-    if($file[0] == '.')
-        continue;
-    
-    if($file == SESSUID_FILENAME)
+    if($file[0] == '.' || $file == SESSUID_FILENAME || $file == 'tail.txt')
         continue;
     
     $f = explode('.', $file);
@@ -124,48 +117,64 @@ exec('cd __fork; rm -f *.json');
 exec('cd '.HTML_FOLDER.'; rm -f *.html');
 exec('rm -f output.zip');
 
-if($hasGlobal)
-    $regions[] = 'GLOBAL';   
-
-$rawServices = [];
-foreach($contexts as $service => $resultSets){
-    $rawServices[] = $service;
+if($runmode == 'api-raw'){
+    file_put_contents(API_JSON, json_encode($contexts));
+}else{
+    $apiResultArray = [];
+    if($hasGlobal)
+        $regions[] = 'GLOBAL';   
     
-    $reporter = new reporter($service);
-    $reporter->process($resultSets)
-        ->getSummary()
-        ->getDetails();
-     
-    $pageBuilderClass = $service . 'pageBuilder';
-    if(!class_exists($pageBuilderClass)){
-        __info($pageBuilderClass . ' class not found, using default pageBuilder');
-        $pageBuilderClass = 'pageBuilder';
-    }
+    $rawServices = [];
+    foreach($contexts as $service => $resultSets){
+        $rawServices[] = $service;
         
-    $pb = new $pageBuilderClass($service, $reporter, $serviceStat, $regions);
-    $pb->buildPage();
-}
-
-## pageBuilderForDashboard
-$dashPB = new dashboardPageBuilder('index', [], $serviceStat, $regions);
-$dashPB->buildPage();
-
-exec('cd adminlte; zip -r output.zip html; mv output.zip ../output.zip');
-__info("Pages generated, download \033[1;42moutput.zip\033[0m to view");
-__info("CloudShell user, you may use this path: \033[1;42m~/service-screener/output.zip\033[0m");
-
-if ($uploadToS3) {
-    $bucket_region = $regions[0]; // use the first region as the bucket region
-    $uploader = new Uploader($bucket_region, $bucket); // returns boolean
-
-    if ($uploader) {
-        __info("*** Uploading files to S3 bucket: $bucket (region: $bucket_region)");
+        $reporter = new reporter($service);
+        $reporter->process($resultSets)
+            ->getSummary()
+            ->getDetails();
         
-        $uploaded = $uploader->uploadFromFolder(__DIR__ . '/adminlte/html');
-        if ($uploaded) {
-            __info("*** Upload completed ***");
-            __info("You may visit the report at: \033[1;42mhttp://$bucket.s3-website-$bucket_region.amazonaws.com\033[0m");
+        if($runmode == 'report'){
+            $pageBuilderClass = $service . 'pageBuilder';
+            if(!class_exists($pageBuilderClass)){
+                __info($pageBuilderClass . ' class not found, using default pageBuilder');
+                $pageBuilderClass = 'pageBuilder';
+            }
+                
+            $pb = new $pageBuilderClass($service, $reporter, $serviceStat, $regions);
+            $pb->buildPage();
+        }else{
+            $apiResultArray[$service]['summary'] = $reporter->getCard();
+            $apiResultArray[$service]['detail'] = $reporter->getDetail();
         }
+    }
+    
+    
+    ## pageBuilderForDashboard
+    if($runmode == 'report'){
+        $dashPB = new dashboardPageBuilder('index', [], $serviceStat, $regions);
+        $dashPB->buildPage();
+    
+        exec('cd adminlte; zip -r output.zip html; mv output.zip ../output.zip');
+        __info("Pages generated, download \033[1;42moutput.zip\033[0m to view");
+        __info("CloudShell user, you may use this path: \033[1;42m~/service-screener/output.zip\033[0m");
+        
+        if ($uploadToS3) {
+            $bucket_region = $regions[0]; // use the first region as the bucket region
+            $uploader = new Uploader($bucket_region, $bucket); // returns boolean
+        
+            if ($uploader) {
+                __info("*** Uploading files to S3 bucket: $bucket (region: $bucket_region)");
+                
+                $uploaded = $uploader->uploadFromFolder(__DIR__ . '/adminlte/html');
+                if ($uploaded) {
+                    __info("*** Upload completed ***");
+                    __info("You may visit the report at: \033[1;42mhttp://$bucket.s3-website-$bucket_region.amazonaws.com\033[0m");
+                }
+            }
+        }
+    }else{
+        #runmode == api-full   
+        file_put_contents(API_JSON, json_encode($apiResultArray));
     }
 }
 
@@ -173,4 +182,6 @@ if($feedbackFlag){
     __info("*** Sending feedback ***");
     feedback::send($rawServices, $regions);
 }
+
+exec('cd __fork; rm -f tail.txt');
 __info("@ Thank you for using ". Config::ADVISOR['TITLE'] ." @");

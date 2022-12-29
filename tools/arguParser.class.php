@@ -14,9 +14,9 @@ class ArguParser{
         "l" => "log",
         "d" => "debug",
         "t" => "test",
-        "e" => "env",
         "p" => "profile",
-        "b" => "bucket"
+        "b" => "bucket",
+        "m" => "mode"
     ];
     
     static function Load(){

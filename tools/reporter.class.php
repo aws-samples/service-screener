@@ -39,6 +39,10 @@ class reporter{
         return $this->detail;   
     }
     
+    function getCard(){
+        return $this->cardSummary;   
+    }
+    
     function __process($region, $identifier, $results){
         global $DEBUG;
         foreach($results as $key => $info){
@@ -243,6 +247,9 @@ if(isset($_GET['test'])){
         ->getDetails()
         ;
         
+    # __pr($reporter->getDetail());
+    # __pr($reporter->getCard());
+    
     $pageBuilder = new rdsPageBuilder('rds', $reporter, $services, $regions);
     $pageBuilder->buildPage();
 }

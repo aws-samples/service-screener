@@ -3,4 +3,5 @@ composer.lock
 composer.phar
 vendor
 localtest.php
+__fork
 .DS_Store
