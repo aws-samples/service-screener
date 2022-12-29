@@ -61,6 +61,9 @@ class Config{
             "required" => false,
             "default" => false
         ],
+        "mode" => [
+            "required" => false,
+            "default" => "report"
         ],
         "profile" => [
             "required" => false,

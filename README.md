@@ -84,6 +84,17 @@ screener --region ap-southeast-1,us-east-1 --services rds,iam
 screener --region ap-southeast-1,us-east-1 --services rds,iam --bucket service-screener-<YOUR_ACCOUNT_ID>
 ```
 
+## Other parameters
+```bash
+##mode
+--mode api-full | api-raw | report
+
+# api-full: give full results in JSON format
+# api-raw: raw findings
+# report: generate default web html
+```
+
+
 ![Get Report](https://d39bs20xyg7k53.cloudfront.net/services-screener/p3-getreport.gif)
 
 The output is generated as an output.zip file. 

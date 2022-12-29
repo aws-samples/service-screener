@@ -7,6 +7,7 @@ define('TEMPLATE_DIR', __DIR__.'/templates');
 define('HTML_FOLDER', 'adminlte/html');
 define('HTML_DIR', __DIR__.'/'.HTML_FOLDER);
 define('FORK_DIR', __DIR__.'/__fork');
+define('API_JSON', FORK_DIR.'/api.json');
 
 define('GENERAL_CONF_PATH', SERVICE_DIR . '/general.reporter.json');
 
