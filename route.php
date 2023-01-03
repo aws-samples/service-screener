@@ -14,7 +14,7 @@ if(!in_array($api, API_LIST))
     
 switch($api){
     case 'version':
-        print_r(Config::ADVISOR);
+        echo json_encode(Config::ADVISOR);
         break;
     default:
         break;
