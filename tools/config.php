@@ -24,8 +24,8 @@ class Config{
     
     const ADVISOR = [
         'TITLE' => 'Service Screener',
-        'VERSION' => '0.1',
-        'LAST_UPDATE' => '14-Sep-2021'
+        'VERSION' => '1.0.1',
+        'LAST_UPDATE' => '3-Jan-2023'
     ];
     
     const ADMINLTE = [
