@@ -1,0 +1,18 @@
+[ERROR]: Value must be 1 or below
+[ec2_ec2::verifyIamProfileAssociate(CLASS=Aws\Result)]: /home/ec2-user/environment/service-screener/services/ec2/drivers/ec2_ec2.class.php (64)
+	[ec2_ec2::__checkIamProfileAssociate()]: /home/ec2-user/environment/service-screener/services/evaluator.class.php (21)
+		[evaluator::run()]: /home/ec2-user/environment/service-screener/services/ec2/ec2.class.php (221)
+			[ec2::advise()]: /home/ec2-user/environment/service-screener/bootstrap.inc.php (51)
+				[scanByService(0:ec2, 0:ap-southeast-1, )]: /home/ec2-user/environment/service-screener/screen.php (79)
+[ERROR]: Value must be 1 or below
+[ec2_ec2::verifyIamProfileAssociate(CLASS=Aws\Result)]: /home/ec2-user/environment/service-screener/services/ec2/drivers/ec2_ec2.class.php (64)
+	[ec2_ec2::__checkIamProfileAssociate()]: /home/ec2-user/environment/service-screener/services/evaluator.class.php (21)
+		[evaluator::run()]: /home/ec2-user/environment/service-screener/services/ec2/ec2.class.php (221)
+			[ec2::advise()]: /home/ec2-user/environment/service-screener/bootstrap.inc.php (51)
+				[scanByService(0:ec2, 0:ap-southeast-1, )]: /home/ec2-user/environment/service-screener/screen.php (79)
+[ERROR]: Value must be 1 or below
+[ec2_ec2::verifyIamProfileAssociate(CLASS=Aws\Result)]: /home/ec2-user/environment/service-screener/services/ec2/drivers/ec2_ec2.class.php (64)
+	[ec2_ec2::__checkIamProfileAssociate()]: /home/ec2-user/environment/service-screener/services/evaluator.class.php (21)
+		[evaluator::run()]: /home/ec2-user/environment/service-screener/services/ec2/ec2.class.php (221)
+			[ec2::advise()]: /home/ec2-user/environment/service-screener/bootstrap.inc.php (51)
+				[scanByService(0:ec2, 0:ap-southeast-1, )]: /home/ec2-user/environment/service-screener/screen.php (79)
