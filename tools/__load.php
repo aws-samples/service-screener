@@ -28,3 +28,41 @@ function __printStatus($status, $o){
     $o = "[$status] " . $o;
     __pr($o);
 }
+
+function __formatException($e){
+    $o = $e->getTrace();
+    #$o = array_reverse($o);
+    $msg = ["[ERROR]: ".$e->getMessage()."\n"];
+    foreach($o as $ind => $item){
+        $cls = '';
+        if(!empty($item['class'])) $cls = $item['class'].'::';
+    
+        $func = $item['function'];
+        $line = $item['line'];
+        $file = $item['file'];
+        
+        $args = [];
+        foreach($item['args'] as $arg){
+            if(is_object($arg)) $args[] = "CLASS=".get_class($arg);
+            else if (is_array($arg)){
+                array_walk($arg, function(&$v, $k){
+                    $val = $v;
+                    if(is_array($v)) $val = 'ARRAY(...)';
+                    else if(is_object($v)) $val = 'OBJECT(...)';
+                    $v = "{$k}:$val";
+                });
+        
+                $args[] = implode(', ', $arg);
+            }else $args[] = $arg;
+        }
+    
+        $args = implode(', ', $args);
+        $indent = "";
+        for($i=1;$i<=$ind;$i++)
+            $indent .= "\t";
+    
+        $msg[] = $indent . "[$cls$func($args)]: $file ($line)\n";
+    }
+    
+    return implode('', $msg);
+}

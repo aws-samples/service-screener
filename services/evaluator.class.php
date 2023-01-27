@@ -12,19 +12,32 @@ class evaluator{
         $rulePrefix = $servClass[0] . '::rules';
         $rules = $CONFIG->get($rulePrefix, []);
         
-        $cnt = 0;
+        $ecnt = $cnt = 0;
+        $emsg = [];
         foreach(get_class_methods($this) as $method){
-            if(substr($method, 0, 7) == '__check')
+            if(substr($method, 0, 7) == '__check'){
                 if(empty($rules) || in_array(strtolower(substr($method, 7)), $rules)){
-                    $this->$method();   
-                    $cnt++;
+                    try{
+                        $this->$method();
+                        $cnt++;
+                    }catch(Exception $e){
+                        $ecnt++;
+                        $emsg[] = __formatException($e);   
+                    }
                 }
+            }
+        }
+        
+        if(!empty($emsg)){
+            __warn("Catch: $ecnt exception(s)");
+            file_put_contents(FORK_DIR .'/error.txt', implode("\n\n", $emsg), FILE_APPEND | LOCK_EX);
         }
         
         $scanned = $CONFIG->get('scanned');
         $CONFIG->set('scanned', [
             'resources' => $scanned['resources'] + 1, 
-            'rules' => $scanned['rules'] + $cnt
+            'rules' => $scanned['rules'] + $cnt,
+            'exceptions' => $ecnt
         ]);
     }
     

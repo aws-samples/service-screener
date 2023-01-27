@@ -89,7 +89,7 @@ $scanned=[
 ];
 $hasGlobal = false;
 foreach($files as $file){
-    if($file[0] == '.' || $file == SESSUID_FILENAME || $file == 'tail.txt')
+    if($file[0] == '.' || $file == SESSUID_FILENAME || $file == 'tail.txt' || $file == 'error.txt')
         continue;
     
     $f = explode('.', $file);
@@ -113,8 +113,12 @@ __info("Total Resources scanned: " . number_format($scanned['resources']) . " | 
 __info("Time consumed: " .  round(microtime(true) - $overallTimeStart, 3));
 
 ## Cleanup
+exec('cd '.HTML_FOLDER.'; rm -f *.html; rm -f error.txt');
+
+if(file_exists(FORK_DIR.'/error.txt'))
+    exec('cd __fork; mv error.txt '.HTML_DIR.'/');
+
 exec('cd __fork; rm -f *.json');
-exec('cd '.HTML_FOLDER.'; rm -f *.html');
 exec('rm -f output.zip');
 
 if($runmode == 'api-raw'){
