@@ -65,9 +65,78 @@ function scanByService($service, $regions, $scanInParallel = true){
         file_put_contents(FORK_DIR .'/'.$service[0].'.stat.json', json_encode($scanned));
         
         $resourceCnt = $scanned['resources'];
-        __info("#### ($resourceCnt) <".$service[0]."> completed within ". round(($time_end - $time_start), 3) . "s");
+        $exceptionCnt = $scanned['exceptions'];
+        $rules = $scanned['rules'];
+        
+        $emsg = "";
+        if($exceptionCnt > 0) $emsg = ", \033[1;41mwith $exceptionCnt exception(s)\033[0m";
+        
+        __info("#### $resourceCnt <".$service[0]."> ($rules scanned) completed within ". round(($time_end - $time_start), 3) . "s$emsg");
         
         if($scanInParallel)
             exit();
+    }
+}
+
+function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $regions, $uploadToS3){
+    if($runmode == 'api-raw'){
+        file_put_contents(API_JSON, json_encode($contexts));
+    }else{
+        $apiResultArray = [];
+        if($hasGlobal)
+            $regions[] = 'GLOBAL';   
+        
+        $rawServices = [];
+        foreach($contexts as $service => $resultSets){
+            $rawServices[] = $service;
+            
+            $reporter = new reporter($service);
+            $reporter->process($resultSets)
+                ->getSummary()
+                ->getDetails();
+            
+            if($runmode == 'report'){
+                $pageBuilderClass = $service . 'pageBuilder';
+                if(!class_exists($pageBuilderClass)){
+                    __info($pageBuilderClass . ' class not found, using default pageBuilder');
+                    $pageBuilderClass = 'pageBuilder';
+                }
+                    
+                $pb = new $pageBuilderClass($service, $reporter, $serviceStat, $regions);
+                $pb->buildPage();
+            }else{
+                $apiResultArray[$service]['summary'] = $reporter->getCard();
+                $apiResultArray[$service]['detail'] = $reporter->getDetail();
+            }
+        }
+        
+        
+        ## pageBuilderForDashboard
+        if($runmode == 'report'){
+            $dashPB = new dashboardPageBuilder('index', [], $serviceStat, $regions);
+            $dashPB->buildPage();
+        
+            exec('cd adminlte; zip -r output.zip html; mv output.zip ../output.zip');
+            __info("Pages generated, download \033[1;42moutput.zip\033[0m to view");
+            __info("CloudShell user, you may use this path: \033[1;42m~/service-screener/output.zip\033[0m");
+            
+            if ($uploadToS3) {
+                $bucket_region = $regions[0]; // use the first region as the bucket region
+                $uploader = new Uploader($bucket_region, $bucket); // returns boolean
+            
+                if ($uploader) {
+                    __info("*** Uploading files to S3 bucket: $bucket (region: $bucket_region)");
+                    
+                    $uploaded = $uploader->uploadFromFolder(__DIR__ . '/adminlte/html');
+                    if ($uploaded) {
+                        __info("*** Upload completed ***");
+                        __info("You may visit the report at: \033[1;42mhttp://$bucket.s3-website-$bucket_region.amazonaws.com\033[0m");
+                    }
+                }
+            }
+        }else{
+            #runmode == api-full   
+            file_put_contents(API_JSON, json_encode($apiResultArray));
+        }
     }
 }
