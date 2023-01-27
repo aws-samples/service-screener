@@ -37,7 +37,7 @@ class evaluator{
         $CONFIG->set('scanned', [
             'resources' => $scanned['resources'] + 1, 
             'rules' => $scanned['rules'] + $cnt,
-            'exceptions' => $ecnt
+            'exceptions' => $scanned['exceptions'] + $ecnt
         ]);
     }
     

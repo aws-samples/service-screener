@@ -62,7 +62,7 @@ $tempConfig = $__AWS_OPTIONS;
 $tempConfig['region'] = $regions[0];
 CONFIG::setAccountInfo($tempConfig);
 
-$CONFIG->set('scanned', ['resources' => 0, 'rules' => 0]);
+$CONFIG->set('scanned', ['resources' => 0, 'rules' => 0, 'exceptions' => 0]);
 
 $serviceStat = [];
 
@@ -85,7 +85,8 @@ if($scanInParallel)
 $files = scandir(FORK_DIR);
 $scanned=[
     'resources' => 0,
-    'rules' => 0
+    'rules' => 0,
+    'exceptions' => 0
 ];
 $hasGlobal = false;
 foreach($files as $file){
@@ -96,10 +97,11 @@ foreach($files as $file){
     if(sizeof($f) == 2){
         $contexts[$f[0]] = json_decode(file_get_contents(FORK_DIR . '/' . $file), true);
     }else{
-        list($cnt, $rules) = array_values(json_decode(file_get_contents(FORK_DIR . '/' .$file), true));
+        list($cnt, $rules, $exceptions) = array_values(json_decode(file_get_contents(FORK_DIR . '/' .$file), true));
         $serviceStat[$f[0]] = $cnt;
         $scanned['resources'] += $cnt;
         $scanned['rules'] += $rules;
+        $scanned['exceptions'] += $exceptions;
         
         if(in_array($f[0], CONFIG::GLOBAL_SERVICES))
             $hasGlobal = true;
@@ -121,66 +123,8 @@ if(file_exists(FORK_DIR.'/error.txt'))
 exec('cd __fork; rm -f *.json');
 exec('rm -f output.zip');
 
-if($runmode == 'api-raw'){
-    file_put_contents(API_JSON, json_encode($contexts));
-}else{
-    $apiResultArray = [];
-    if($hasGlobal)
-        $regions[] = 'GLOBAL';   
-    
-    $rawServices = [];
-    foreach($contexts as $service => $resultSets){
-        $rawServices[] = $service;
-        
-        $reporter = new reporter($service);
-        $reporter->process($resultSets)
-            ->getSummary()
-            ->getDetails();
-        
-        if($runmode == 'report'){
-            $pageBuilderClass = $service . 'pageBuilder';
-            if(!class_exists($pageBuilderClass)){
-                __info($pageBuilderClass . ' class not found, using default pageBuilder');
-                $pageBuilderClass = 'pageBuilder';
-            }
-                
-            $pb = new $pageBuilderClass($service, $reporter, $serviceStat, $regions);
-            $pb->buildPage();
-        }else{
-            $apiResultArray[$service]['summary'] = $reporter->getCard();
-            $apiResultArray[$service]['detail'] = $reporter->getDetail();
-        }
-    }
-    
-    
-    ## pageBuilderForDashboard
-    if($runmode == 'report'){
-        $dashPB = new dashboardPageBuilder('index', [], $serviceStat, $regions);
-        $dashPB->buildPage();
-    
-        exec('cd adminlte; zip -r output.zip html; mv output.zip ../output.zip');
-        __info("Pages generated, download \033[1;42moutput.zip\033[0m to view");
-        __info("CloudShell user, you may use this path: \033[1;42m~/service-screener/output.zip\033[0m");
-        
-        if ($uploadToS3) {
-            $bucket_region = $regions[0]; // use the first region as the bucket region
-            $uploader = new Uploader($bucket_region, $bucket); // returns boolean
-        
-            if ($uploader) {
-                __info("*** Uploading files to S3 bucket: $bucket (region: $bucket_region)");
-                
-                $uploaded = $uploader->uploadFromFolder(__DIR__ . '/adminlte/html');
-                if ($uploaded) {
-                    __info("*** Upload completed ***");
-                    __info("You may visit the report at: \033[1;42mhttp://$bucket.s3-website-$bucket_region.amazonaws.com\033[0m");
-                }
-            }
-        }
-    }else{
-        #runmode == api-full   
-        file_put_contents(API_JSON, json_encode($apiResultArray));
-    }
-}
+## Scripts move to bootstrap.inc.php
+generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $regions, $uploadToS3);
 
 if($feedbackFlag){    
     __info("*** Sending feedback ***");
