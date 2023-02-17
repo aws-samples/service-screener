@@ -428,7 +428,7 @@
             "[]<https://linuxhint.com/elasticsearch-best-practices/#:~:text=Optimized%20Thread%2Dpool>"    
         ]
     },
-    "UltraWarm": {
+    "UltrawarmEnabled": {
         "category": "C",
         "^description": "",
         "downtime": 0,

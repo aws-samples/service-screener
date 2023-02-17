@@ -13,6 +13,23 @@ class opensearch_common extends evaluator{
             ['DomainName' => $this->domain]
         );
         $this->cluster_config = $this->attribute['DomainStatus']['ClusterConfig'];
+        $this->aos_versions = $this->opensearchClient->listVersions([
+            'MaxResults' => 11,
+        ]);
+        $this->latest_version = $this->aos_versions['Versions'][0];
+
+        $this->engine_version = $this->attribute['DomainStatus']['EngineVersion'];
+
+        $this->instance_type_details = $this->opensearchClient->listInstanceTypeDetails([
+            'EngineVersion' => $this->engine_version // REQUIRED
+        ]);
+
+        foreach($this->instance_type_details["InstanceTypeDetails"] as $idx => $details){
+            $this->instance_type_list[$idx] = $details['InstanceType'];
+        }
+
+        //  __pr($this->instance_type_list);
+
 
         $this->init();
     }
@@ -70,7 +87,14 @@ class opensearch_common extends evaluator{
         // }
     }
 
-    // Open access is already restricted unconditionally. TODO: In the future, look for ways/patterns to further restrict access policy
+    function __checkEngineVersion(){
+        $this->results['EngineVersion'] = [1, 'Latest'];
+        if ($this->engine_version != $this->latest_version)
+            $this->results['EngineVersion'] = [-1, 'Later Engine Versions Available'];
+    }
+
+    // Open access is already restricted unconditionally. 
+    // TODO: Look for ways/patterns to further restrict access policy
 
     // function __checkResourceAccessPolicy(){
         
@@ -110,4 +134,101 @@ class opensearch_common extends evaluator{
         //     $this->results['DomainWithinVPC'] = [1,'Enabled'];
     }
 
+    // Unable to find a way to look into cluster health
+    // TODO:
+    // function __checkReplicaShard(){
+    //     $this->results['DomainWithinVPC'] = [1, 'Within VPC'];
+    //     // __pr($this->domain);
+    //     if(empty($this->attribute['DomainStatus']['VPCOptions']))
+    //         $this->results['DomainWithinVPC'] = [-1, 'Public'];
+    //     // $resp = $this->attribute['DomainStatus']['AdvancedSecurityOptions']['Enabled'];
+    //     // if($resp)
+    //     //     $this->results['DomainWithinVPC'] = [1,'Enabled'];
+    // }
+
+    // TODO: referenece this from EC2 driver function
+    function __checkInstanceVersion(){
+        $instanceType = $this->cluster_config['InstanceType'];
+        // __pr($instanceType); 
+        $typeArr = explode('.', $instanceType);
+        $family = $typeArr[0];
+        $size = $typeArr[1];
+        $familyChar = str_split($family);
+        
+        // __pr($familyChar);
+        // __pr($family);
+
+        foreach($familyChar as $idx => $char){
+            // __pr($familyChar);
+            if(is_numeric($char)){
+                $familyChar[$idx]++; 
+            }
+        }
+
+        $latestInstance = implode($familyChar).'.'.$size.'.search';
+
+        // __pr(gettype($latestInstance));
+
+        // __pr($this->instance_type_list);
+        if (in_array($latestInstance , $this->instance_type_list)) {
+            $this->results['LatestInstanceVersion'] = [-1, $instanceType];
+        }
+        $this->results['LatestInstanceVersion'] = [1, $instanceType];
+    }
+
+    function __checkTSeriesForProduction(){
+        $instanceType = $this->cluster_config['InstanceType'];
+        $typeArr = explode('.', $instanceType);
+        $family = $typeArr[0];
+        $familyChar = str_split($family);
+        $this->results['TSeriesForProduction'] = [1, $instanceType];
+        if ($familyChar[0] == 't') {
+            $this->results['TSeriesForProduction'] = [-1, $instanceType];
+        } 
+    }
+
+    function __checkEncyptionAtRest(){
+        $this->results['Encryption at rest'] = [-1, 'Disabled'];
+        if ($this->attribute['DomainStatus']['EncryptionAtRestOptions']['Enabled']) {
+            $this->results['Encryption at rest'] = [1, 'Enabled'];
+        }
+    }
+
+    function __checkNodeToNodeEncryption(){
+        $this->results['Node to node encryption'] = [-1, 'Disabled'];
+        if ($this->attribute['DomainStatus']['NodeToNodeEncryptionOptions']['Enabled']) {
+            $this->results['Node to node encryption'] = [1, 'Enabled'];
+        }
+    }
+
+    // TODO: Fix error handler
+    // function __checkSearchSlowLogs(){
+    //     $this->results['Search Slow logs'] = [1, 'Enabled'];
+    //     try {
+    //         $results = $this->attribute['DomainStatus']['LogPublishingOptions']['SEARCH_SLOW_LOGS'];
+    //     } catch (Exception $e) {
+    //         $this->results['Search Slow logs'] = [-1, 'Disabled'];
+    //     }
+    // }
+
+    function __checkAutoTune(){
+        $this->results['Autotune'] = [-1, 'Disabled'];
+        if ($this->attribute['DomainStatus']['AutoTuneOptions']['State'] == 'ENABLED') {
+            $this->results['Autotune'] = [1, 'Enabled'];
+        }
+    }
+
+    function __checkUltrawarmEnabled(){
+        $this->results['UltraWarm'] = [-1, 'Disabled'];
+        if ($this->cluster_config['WarmEnabled']) {
+            $this->results['UltraWarm'] = [1, 'Enabled'];
+        }
+    }
+
+    function __checkColdStorage(){
+        $this->results['ColdStorage'] = [-1, 'Disabled'];
+        if ($this->cluster_config['ColdStorageOptions']) {
+            $this->results['ColdStorage'] = [1, 'Enabled'];
+        }
+    }
 }
