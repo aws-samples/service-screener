@@ -201,15 +201,13 @@ class opensearch_common extends evaluator{
         }
     }
 
-    // TODO: Fix error handler
-    // function __checkSearchSlowLogs(){
-    //     $this->results['Search Slow logs'] = [1, 'Enabled'];
-    //     try {
-    //         $results = $this->attribute['DomainStatus']['LogPublishingOptions']['SEARCH_SLOW_LOGS'];
-    //     } catch (Exception $e) {
-    //         $this->results['Search Slow logs'] = [-1, 'Disabled'];
-    //     }
-    // }
+    function __checkSearchSlowLogs(){
+        $this->results['Search Slow logs'] = [-1, 'Disabled'];
+        if (isset($this->attribute['DomainStatus']['LogPublishingOptions']['SEARCH_SLOW_LOGS'])) {
+            $this->results['Search Slow logs'] = [1, 'Enabled'];
+        }
+        __pr($this->results);
+    }
 
     function __checkAutoTune(){
         $this->results['Autotune'] = [-1, 'Disabled'];
