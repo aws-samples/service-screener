@@ -214,7 +214,7 @@ if(isset($_GET['test'])){
     global $DEBUG;
     $DEBUG=1;
     include_once(__DIR__.'/../bootstrap.inc.php');
-    include_once(SERVICE_DIR.'/pageBuilder.class.php');
+    include_once(__DIR__.'/pageBuilder.class.php');
     include_once(SERVICE_DIR.'/rds/rds.pageBuilder.php');
     
     $regions = ['ap-southeast-1'];

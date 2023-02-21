@@ -2,6 +2,7 @@
 include_once(__DIR__ .'/config.php');
 include_once(__DIR__ .'/aws-sdk-custom-credential-provider.php');
 include_once(__DIR__ .'/arguParser.class.php');
+include_once(__DIR__ .'/pageBuilder.class.php');
 include_once(__DIR__ .'/reporter.class.php');
 include_once(__DIR__ .'/feedback.class.php');
 include_once(__DIR__ .'/policy.class.php');

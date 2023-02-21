@@ -109,13 +109,10 @@ function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $
                 $apiResultArray[$service]['detail'] = $reporter->getDetail();
             }
         }
-        
+        ## <serviceFamily>:<region>:<serviceName>:<checks>
         
         ## pageBuilderForDashboard
         if($runmode == 'report'){
-            __pr($serviceStat);
-            __pr($regions);
-            die();
             $dashPB = new dashboardPageBuilder('index', [], $serviceStat, $regions);
             $dashPB->buildPage();
         
