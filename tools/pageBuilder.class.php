@@ -146,9 +146,9 @@ class pageBuilder{
     }
 
     function generateCategoryBadge($category, $addtionalHtmlAttr){
-        $validCategory = ['R', 'S', 'O', 'P', 'C'];
-        $colorByCategory = ['info', 'danger', 'primary', 'success', 'warning'];
-        $nameByCategory = ['Reliability', 'Security', 'Operation Excellence', 'Performance Efficiency', 'Cost Optimization'];
+        $validCategory = ['R', 'S', 'O', 'P', 'C', 'T'];
+        $colorByCategory = ['info', 'danger', 'primary', 'success', 'warning', 'info'];
+        $nameByCategory = ['Reliability', 'Security', 'Operation Excellence', 'Performance Efficiency', 'Cost Optimization', 'Text'];
         if( !in_array($category, $validCategory)){
             $category = 'X';
             $color = 'info';
@@ -727,6 +727,7 @@ EOL;
     <option value='S'>Security</option>
     <option value='P'>Performance Efficiency</option>
     <option value='C'>Cost Optimization</option>
+    <option value='T'>*Text*</option>
   </select>
 </div>
 EOL;
