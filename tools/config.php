@@ -19,13 +19,14 @@ class Config{
         'SSMCLIENT_VERS' => '2014-11-06',
         'AOSCLIENT_VERS' => '2021-01-01',
         'EFSCLIENT_VERS' => '2015-02-01',
+        'GUARDDUTYCLIENT_VERS' => '2017-11-28',
         'signature_version' => 'v4'
     ];
     
     const ADVISOR = [
         'TITLE' => 'Service Screener',
-        'VERSION' => '1.0.1',
-        'LAST_UPDATE' => '3-Jan-2023'
+        'VERSION' => '1.0.2',
+        'LAST_UPDATE' => '20-Feb-2023'
     ];
     
     const ADMINLTE = [
@@ -43,7 +44,7 @@ class Config{
         "services" => [
             "required" => false,
             "emptymsg" => "Missing --services, using default value: \$defaultValue",
-            "default" => "rds,ec2,iam,s3,efs,opensearch"
+            "default" => "rds,ec2,iam,s3,efs,opensearch,guardduty"
         ],
         "debug" => [
             "required" => false,
