@@ -42,8 +42,12 @@ class dashboardPageBuilder extends pageBuilder{
         }
         
         foreach($DASHBOARD['CATEGORY'] as $region => $details){
-            foreach($details as $cat => $cnt)
+            foreach($details as $cat => $cnt){
+                if($cat == 'T') 
+                    continue;
+                
                 $dataSets[$cat] += $cnt;
+            }
         }
         
         
@@ -63,7 +67,7 @@ EOL;
         
         
         foreach($dataSets as $cat => $total){
-            if($cat == 'S')
+            if($cat == 'S' || $cat == 'T')
                 continue;
                 
             $items[] = [$this->getDashboardCategoryTiles($cat, $total), ''];

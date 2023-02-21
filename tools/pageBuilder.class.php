@@ -538,11 +538,14 @@ class pageBuilder{
         foreach($services as $name => $count){
             $class = $name == $activeService ? 'active' : '';
             $icon = $this->__navIcon($name);
+            
+            $__count = $count;
+            if($name=='guardduty') $__count = '';
 
             $output[] = "<li class='nav-item'>
             <a href='{$name}.html' class='nav-link {$class}'>
                 <i class='nav-icon fas fa-{$icon}'></i>
-                <p>".strtoupper($name)." <span class='badge badge-info right'>{$count}</span></p>
+                <p>".strtoupper($name)." <span class='badge badge-info right'>{$__count}</span></p>
             </a>
             </li>
             ";
