@@ -141,6 +141,7 @@ class guardduty_detail extends evaluator{
         
         if(isset($types[$type])){
             $topic = $output[0][0].'-'.$output[0][1].'-'.$output[0][2];
+            
             return $docPrefix.$types[$type].".html#".strtolower($topic);
         }else{
             return $generalPage."#suffix?screener=notfound&type=$type";

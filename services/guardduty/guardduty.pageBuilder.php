@@ -250,7 +250,8 @@ class guarddutyPageBuilder extends pageBuilder{
                     $results[$serv] = [];
                     
                 foreach($item as $topic => $detail){
-                    if(!isset($results[$topic]))
+                    
+                    if(!isset($results[$serv][$topic]))
                         $results[$serv][$topic] = [];
                     
                     foreach($detail as $idx => $det){
@@ -275,16 +276,13 @@ class guarddutyPageBuilder extends pageBuilder{
             $cnt = 0;
             $tab[] = "<ul><li>$serv";
             foreach($det as $topic => $arrayItem){
-                if($cnt == 0){
-                    $tab[] = "<ul><li><a href='".$arrayItem['__']."'>$topic</a><ul>";
-                    $cnt++;
-                }
+                $tab[] = "<ul><li><a href='".$arrayItem['__']."'>$topic</a><ul>";
                 foreach($arrayItem['items'] as $it){
                     $tab[] = "<li>" . $it['region'] .': (' . $it['Count'].'), '. $it['Title'] . ' | <small>'.$it['Id'] . "</small></li>";
                 }
+                $tab[] = "</ul>";   #findings
+                $tab[] = "</li></ul>"; #topic
             }
-
-            $tab[] = "</ul></li></ul>";  #Topic
             $tab[] = "</li></ul>";  #Service
         }
         
