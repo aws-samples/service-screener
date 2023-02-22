@@ -56,7 +56,8 @@ function printPillarSummary($reporterJsons){
         'P' => 0,
         'S' => 0,
         'R' => 0,
-        'O' => 0
+        'O' => 0,
+        'T' => 0
     ];
     $pillarTable = new LucidFrame\Console\ConsoleTable();
     $pillarTable->addHeader('Service');
@@ -85,7 +86,7 @@ function printPillarSummary($reporterJsons){
         $pillarTable->addColumn(addPad($s));
         
         foreach($pillarSumm as $k => $v){
-            $total[$k] += $v;   
+            $total[$k] += $v;
         }
     }
     

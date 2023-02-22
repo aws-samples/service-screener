@@ -78,7 +78,7 @@ function scanByService($service, $regions, $scanInParallel = true){
     }
 }
 
-function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $regions, $uploadToS3){
+function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $regions, $uploadToS3, $bucket){
     if($runmode == 'api-raw'){
         file_put_contents(API_JSON, json_encode($contexts));
     }else{
@@ -109,7 +109,7 @@ function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $
                 $apiResultArray[$service]['detail'] = $reporter->getDetail();
             }
         }
-        
+        ## <serviceFamily>:<region>:<serviceName>:<checks>
         
         ## pageBuilderForDashboard
         if($runmode == 'report'){

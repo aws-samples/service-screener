@@ -416,7 +416,7 @@
         ]
     },
     "OptimizedThreadPool": {
-        "category": "",
+        "category": "P",
         "^description": "",
         "downtime": -1,
         "slowness": -1,
