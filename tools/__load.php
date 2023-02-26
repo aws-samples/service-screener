@@ -67,3 +67,38 @@ function __formatException($e){
     
     return implode('', $msg);
 }
+
+function __aws_parseInstanceFamily($instanceFamilyInString){
+    $arr = explode('.', $instanceFamilyInString);
+    if(sizeof($arr) > 3 || sizeof($arr) == 1){
+        return $instanceFamilyInString;
+    }
+    
+    if(sizeof($arr) == 3 && strtolower($arr[0]) =="db"){
+        $p = $arr[1];
+        $s = $arr[2];
+    }else{
+        $p = $arr[0];
+        $s = $arr[1];
+    }
+    
+    $patterns = "/([a-zA-Z]+)(\d+)([a-zA-Z]*)/i";
+        $result = preg_match(
+        $patterns, 
+        $p, 
+        $output
+    );
+    
+    $result = [
+        "full" => $instanceFamilyInString,
+        "prefix" => $p,
+        "suffix" => $s,
+        "prefixDetail" => [
+            "family" => $output[1],
+            "version" => $output[2],
+            "attributes" => $output[3]
+        ]
+    ];
+    
+    return $result;
+}
