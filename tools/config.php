@@ -83,8 +83,6 @@ class Config{
     static function setAccountInfo($__AWS_CONFIG){
         global $CONFIG, $PHPSDK_CRED_PROVIDER, $PHPSDK_CRED_PROFILE;
         $stsInfo = [];
-        
-        
 
         __info(" -- Acquiring identify info...");
         try{

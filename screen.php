@@ -28,6 +28,7 @@ $__AWS_OPTIONS = [
     'signature_version' => CONFIG::AWS_SDK['signature_version']
 ];
 
+$CONFIG->set("__SS_PARAMS", $__cli_options);
 $CONFIG->set("__AWS_OPTIONS", $__AWS_OPTIONS);
 
 $regions = explode(',', $__cli_options['region']);

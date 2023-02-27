@@ -44,6 +44,9 @@ class guarddutyPageBuilder extends pageBuilder{
     }
     
     function __gdProcessFinding($findings){
+        if(empty($findings))
+            return;
+        
         ## Build Summary
         $arr['stat'] = [
             'severity' => [],
@@ -56,10 +59,14 @@ class guarddutyPageBuilder extends pageBuilder{
             2 => []
         ];
         
+        $high = empty($findings[8]) ? 0 : sizeof($findings[8]);
+        $medium = empty($findings[5]) ? 0 : sizeof($findings[5]);
+        $low = empty($findings[2]) ? 0 : sizeof($findings[2]);
+        
         $arr['stat']['severity'] = [
-            'HIGH' => sizeof($findings[8]),
-            'MEDIUM' => sizeof($findings[5]),
-            'LOW' => sizeof($findings[2]),
+            'HIGH' => $high,
+            'MEDIUM' => $medium,
+            'LOW' => $low
         ];
         
         $severityModes = [8, 5, 2];
