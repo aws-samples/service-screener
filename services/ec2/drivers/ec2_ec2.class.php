@@ -11,11 +11,17 @@ class ec2_ec2 extends evaluator{
         $instance = $this->ec2['Instances'][0];
         $instanceType = $instance['InstanceType'];
         
-        $instanceArr = __aws_parseInstanceFamily($instance['InstanceType']);
-        $instancePrefixArr = $instanceArr['prefixDetail'];
-        $instancePrefixArr['version']++;
-        $size = $instanceArr['suffix'];
-        $newFamily = $instancePrefixArr['family'] . $instancePrefixArr['version'] . $instancePrefixArr['attributes'];
+        $typeArr = explode('.', $instanceType);
+        $family = $typeArr[0];
+        $size = $typeArr[1];
+        $familyChar = str_split($family);
+        
+        foreach($familyChar as $idx => $char){
+            if(is_numeric($char)){
+                $familyChar[$idx]++; 
+            }
+        }
+        $newFamily = implode($familyChar);
 
         try{
             $results = $this->ec2Client->describeInstanceTypes([
