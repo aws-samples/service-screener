@@ -79,6 +79,8 @@ function scanByService($service, $regions, $scanInParallel = true){
 }
 
 function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $regions, $uploadToS3, $bucket){
+    global $CONFIG;
+    $stsInfo = $CONFIG->get('stsInfo');
     if($runmode == 'api-raw'){
         file_put_contents(API_JSON, json_encode($contexts));
     }else{
@@ -87,6 +89,16 @@ function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $
             $regions[] = 'GLOBAL';   
         
         $rawServices = [];
+        
+        if($runmode == 'report'){
+            $params = [];
+            foreach($CONFIG->get('__SS_PARAMS') as $key => $val){
+                if(!empty($val))
+                    $params[] = "--$key $val";
+            }
+            $excelObj = new ExcelBuilder($stsInfo['Account'], implode(' ', $params));
+        }
+        
         foreach($contexts as $service => $resultSets){
             $rawServices[] = $service;
             
@@ -104,6 +116,10 @@ function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $
                     
                 $pb = new $pageBuilderClass($service, $reporter, $serviceStat, $regions);
                 $pb->buildPage();
+                
+                ##Excel
+                if(!in_array($service, ['guardduty']))
+                    $excelObj->generateWorkSheet($service, $reporter->cardSummary);
             }else{
                 $apiResultArray[$service]['summary'] = $reporter->getCard();
                 $apiResultArray[$service]['detail'] = $reporter->getDetail();
@@ -113,6 +129,8 @@ function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $
         
         ## pageBuilderForDashboard
         if($runmode == 'report'){
+            $excelObj->__save(HTML_DIR.'/');
+            
             $dashPB = new dashboardPageBuilder('index', [], $serviceStat, $regions);
             $dashPB->buildPage();
         
