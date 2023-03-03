@@ -43,27 +43,11 @@ If you are creating an Amazon S3 bucket manually, you are required to create an 
 ## Installing service-screener
 In the AWS CloudShell terminal, run this to install php:
 ```bash
-if(sudo yum list installed  | grep php-cli > /dev/null) then echo 'PHP installed ,skipped'; else sudo amazon-linux-extras install -y php8.0; fi
-## aws-sdk requires mbstring and xml
-if(sudo yum list installed | grep php-mbstring > /dev/null) then echo 'php-mbstring installed, skipped'; else sudo yum install php-mbstring -y; fi
-if(sudo yum list installed | grep php-xml > /dev/null) then echo 'php-xml installed, skipped'; else sudo yum install php-xml -y; fi
-if(sudo yum list installed | grep php-opcache > /dev/null) then echo 'php-opcache installed, skipped'; else sudo yum install php-opcache -y; fi
-if(sudo yum list installed | grep php-gd > /dev/null) then echo 'php-gd installed, skipped'; else sudo yum install php-gd -y; fi
-## remove existing old version of screener
 rm -rf service-screener
 git clone https://github.com/aws-samples/service-screener.git
 cd service-screener 
 
-## Install Composer & PHP SDK
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-# php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-php composer-setup.php
-php -r "unlink('composer-setup.php');"
-php -d memory_limit=-1 composer.phar require aws/aws-sdk-php phpoffice/phpspreadsheet
-
-## Setup Screener Alias
-alias screener='php -dopcache.enable_cli=1 -dopcache.jit_buffer_size=128M $(pwd)/screen.php'
-
+source install.sh
 ```
 
 ![Install dependencies](https://d39bs20xyg7k53.cloudfront.net/services-screener/p2-dependencies.gif)
