@@ -3,6 +3,7 @@
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class ExcelBuilder{
     private $obj;
@@ -26,7 +27,7 @@ class ExcelBuilder{
         
         $this->obj = new Spreadsheet();
         $this->__setExcelInfo();
-        $this->__generateInfo();
+        # $this->__generateInfo();
         
     }
     
@@ -86,8 +87,10 @@ class ExcelBuilder{
         $this->sheetIndex++;
     }
     
-    function __generateInfo(){
-        $sh = $this->obj->getActiveSheet();
+    function buildSummaryPage($summary){
+        global $CONFIG, $DASHBOARD;
+        
+        $sh = $this->obj->getSheet(0);
         $sh->setTitle("Info");
         
         $info = [
@@ -96,7 +99,61 @@ class ExcelBuilder{
             ['Parameters', $this->ssParams]
         ];
         
+        ##Append Software Info
+        $info[] = ['...Product Info', '...................'];
+        $softwareInfo = $CONFIG::ADVISOR;
+        foreach($softwareInfo as $key => $val)
+            $info[] = [$key, $val];
+            
+        ##Append number of resources scanned, rules executed and timespent
+        $info[] = ['...Execution Summary', '...................'];
+        foreach($summary as $key => $val)
+            $info[] = [$key, $val];
+        
         $sh->fromArray($info, NULL, 'A1');
+        
+        ## Enhance MAP
+        $darr = $arr = [];
+        $total = 0;
+        $types = $DASHBOARD['MAP'];
+        
+        # S, O, C, P, R, Total
+        $arr[] = ['', 'S', 'O', 'C', 'P', 'R', 'Total'];
+        $darr[] = ['', 'S', 'O', 'C', 'P', 'R', '-', 'H', 'M', 'L', 'I', '-', 'Total'];
+        foreach($types as $service => $v){
+            $_ = $v['_'];
+            $sum = $_['S'] + $_['O'] + $_['C'] + $_['P'] + $_['R'];
+            $dsum = $v['H'] + $v['M'] + $v['L'] + $v['I'];
+            $arr[] = [$service, $_['S'], $_['O'], $_['C'], $_['P'], $_['R'], $sum];
+            $darr[] = [$service, $v['S'], $v['O'], $v['C'], $v['P'], $v['R'], '-', $v['H'], $v['M'], $v['L'], $v['I'], '-', $dsum];
+        }
+        
+        $totalServ = sizeof($types);
+        $endRow = $totalServ + 2;
+        
+        $sp = $endRow + 2;
+        $sp1 = $sp+1;
+        $dEndRow = $totalServ + $sp + 1;
+        
+        # Build HIGH FINDING REPORT
+        $sh->setCellValue('D1', 'Type');
+        $sh->setCellValue('E1', 'High Criticality Findings');
+        $sh->mergeCells('E1:J1');
+        
+        $sh->fromArray($arr, null, 'D2', true);
+        $this->__setBorder($sh, 'D1:J' . $endRow);
+        
+        # Build DETAIL FINDING REPORT
+        $sh->setCellValue('D' . $sp, 'Type');
+        $sh->setCellValue('E' . $sp, 'Finding Reports');
+        $sh->mergeCells("E$sp" .':'. "P$sp");
+        
+        $sh->fromArray($darr, null, 'D'.$sp1, true);
+        $startCell = 'D' . $sp;
+        $lastCell = 'P'.$dEndRow;
+        
+        $this->__setBorder($sh, $startCell.':'.$lastCell);
+        
         $this->__setAutoSize($sh);
     }
     
@@ -110,6 +167,19 @@ class ExcelBuilder{
     }
     
     ##Sheet
+    function __setBorder(&$sh, $range){
+        $styleArray = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => '00000000'],
+                ],
+            ], 
+        ];
+        
+        $sh->getStyle($range)->applyFromArray($styleArray);
+    }
+    
     function __setAutoSize(&$sh){
         foreach($sh->getColumnIterator() as $col){
             $sh->getColumnDimension($col->getColumnIndex())->setAutoSize(true);

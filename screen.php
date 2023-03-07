@@ -88,9 +88,13 @@ foreach($files as $file){
 
 if($testmode)
     exit("Test mode enable, script halted" . PHP_EOL);
+    
+$timespent = round(microtime(true) - $overallTimeStart, 3);
+$scanned['timespent'] = $timespent;
+$CONFIG->set('SCREENER-SUMMARY', $scanned);
 
 __info("Total Resources scanned: " . number_format($scanned['resources']) . " | No. Rules executed: " . number_format($scanned['rules']));
-__info("Time consumed: " .  round(microtime(true) - $overallTimeStart, 3));
+__info("Time consumed: " .  $timespent);
 
 ## Cleanup
 exec('cd '.HTML_FOLDER.'; rm -f *.html; rm -f error.txt');
