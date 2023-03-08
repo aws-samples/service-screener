@@ -79,16 +79,40 @@ class reporter{
     
     function getSummary(){
         global $DASHBOARD;
+        
+        ## Enhance for MAP summary
+        ## _ : refers to HIGH category
+        $DASHBOARD['MAP'][$this->service] = [
+            '_' => [
+                'S' => 0,
+                'C' => 0,
+                'R' => 0,
+                'P' => 0,
+                'O' => 0    
+            ],
+            'H' => 0,
+            'M' => 0,
+            'L' => 0,
+            'I' => 0,
+            'S' => 0,
+            'C' => 0,
+            'R' => 0,
+            'P' => 0,
+            'O' => 0    
+        ];
+        
         foreach($this->summaryRegion as $check => $dataSet){
             foreach($dataSet as $region => $obj){
+                $itemSize = sizeof($obj);
+                
                 #check criticality
                 $critical = $this->__checkCriticality($check);
                 if(empty($DASHBOARD['CRITICALITY'][$region][$critical]))
                     $DASHBOARD['CRITICALITY'][$region][$critical] = 0;
-                $DASHBOARD['CRITICALITY'][$region][$critical]+= sizeof($obj);
+                $DASHBOARD['CRITICALITY'][$region][$critical]+= $itemSize;
                 
                 if($critical == 'H'){
-                    $DASHBOARD['SERV'][$this->service][$region]['H'] += sizeof($obj);
+                    $DASHBOARD['SERV'][$this->service][$region]['H'] += $itemSize;
                 }
                 
                 #check category
@@ -97,7 +121,19 @@ class reporter{
                 if(empty($DASHBOARD['CATEGORY'][$region][$mainCategory]))
                     $DASHBOARD['CATEGORY'][$region][$mainCategory] = 0;
                     
-                $DASHBOARD['CATEGORY'][$region][$mainCategory]+= sizeof($obj);
+                $DASHBOARD['CATEGORY'][$region][$mainCategory]+= $itemSize;
+                
+                ## Enhance for MAP summary
+                if($mainCategory == 'T')
+                    continue;
+                    
+                if($critical == 'H'){
+                    $DASHBOARD['MAP'][$this->service]['_'][$mainCategory] += $itemSize;
+                }else{
+                    
+                }
+                $DASHBOARD['MAP'][$this->service][$critical] += $itemSize;
+                $DASHBOARD['MAP'][$this->service][$mainCategory] += $itemSize;
             }
         }
         
@@ -214,7 +250,7 @@ if(isset($_GET['test'])){
     global $DEBUG;
     $DEBUG=1;
     include_once(__DIR__.'/../bootstrap.inc.php');
-    include_once(__DIR__.'/pageBuilder.class.php');
+    include_once(SERVICE_DIR.'/pageBuilder.class.php');
     include_once(SERVICE_DIR.'/rds/rds.pageBuilder.php');
     
     $regions = ['ap-southeast-1'];

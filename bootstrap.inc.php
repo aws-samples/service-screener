@@ -96,6 +96,8 @@ function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $
                 if(!empty($val))
                     $params[] = "--$key $val";
             }
+            
+            $summary = $CONFIG->get('SCREENER-SUMMARY');
             $excelObj = new ExcelBuilder($stsInfo['Account'], implode(' ', $params));
         }
         
@@ -129,10 +131,12 @@ function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $
         
         ## pageBuilderForDashboard
         if($runmode == 'report'){
-            $excelObj->__save(HTML_DIR.'/');
-            
             $dashPB = new dashboardPageBuilder('index', [], $serviceStat, $regions);
             $dashPB->buildPage();
+            
+            ## dashPB will gather summary info, hence rearrange the sequences
+            $excelObj->buildSummaryPage($summary);
+            $excelObj->__save(HTML_DIR.'/');
         
             exec('cd adminlte; zip -r output.zip html; mv output.zip ../output.zip');
             __info("Pages generated, download \033[1;42moutput.zip\033[0m to view");
