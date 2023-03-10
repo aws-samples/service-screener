@@ -238,9 +238,11 @@ class guarddutyPageBuilder extends pageBuilder{
         if(!empty($__l)) $tab[] = $this->__buildFindingsList('Low Severity', $__l);
         
         # $tab[] = $this->__buildFindingsList($title, $items);
-        
-        $html = implode('', $tab);
-        unset($tab);
+        $html = 'No findings';
+        if(!empty($tab)){
+            $html = implode('', $tab);
+            unset($tab);
+        }
         
         $card = $this->generateCard($id=$this->getHtmlId('findings'), $html, $cardClass='alert', $title='All findings', '', $collapse=true);
         $items[] = [$card, ''];
