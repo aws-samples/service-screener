@@ -1,6 +1,6 @@
 # Service Screener
 
-**Service Screener** is an unofficial tool that provides best practice guidance for your AWS environment based on the [AWS Well Architected Framework](https://aws.amazon.com/architecture/well-architected/)
+**Service Screener** is an unofficial tool that provides best practice guidance for your AWS environment based on the [AWS Well Architected Framework](https://aws.amazon.com/architecture/well-architected/). 
 
 ## Overview
 Service Screener is a tool that runs automated checks on AWS environments and provide recommendations based on the [AWS Well Architected Framework](https://aws.amazon.com/architecture/well-architected/). 
@@ -63,7 +63,7 @@ source install.sh
 ## Using Service Screener
 When running Service Screener, you will need to specify the regions and services you would like it to inspect. It currently supports Amazon EC2, Amazon RDS, AWS IAM, Amazon Opensearch, and Amazon S3.
 
-We recommend running it in all regions where you have deployed workloads in. Adjust the code samples below to suit your needs. 
+We recommend running it in all regions where you have deployed workloads in. Adjust the code samples below to suit your needs then copy and paste it into Cloudshell to run Service Screener. 
 
 **Example 1: Running in the Singapore region, checking all services**
 ```
