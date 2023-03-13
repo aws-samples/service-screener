@@ -20,6 +20,7 @@ class Config{
         'AOSCLIENT_VERS' => '2021-01-01',
         'EFSCLIENT_VERS' => '2015-02-01',
         'GUARDDUTYCLIENT_VERS' => '2017-11-28',
+        'LAMBDACLIENT_VERS' => '2015-03-31',
         'signature_version' => 'v4'
     ];
     
