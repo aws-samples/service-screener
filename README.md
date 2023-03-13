@@ -1,16 +1,14 @@
 # Service Screener
 
-**Service Screener** is an unofficial tool that provides best practice guidance for your AWS environment based on the [AWS Well Architected Framework](https://aws.amazon.com/architecture/well-architected/). 
-
 ## Overview
 Service Screener is a tool that runs automated checks on AWS environments and provide recommendations based on the [AWS Well Architected Framework](https://aws.amazon.com/architecture/well-architected/). 
 
-AWS customers can use this tool on their own envrionments and use the recommendations to improve the Security, Reliability, Operational Excellence, Performance Efficiency and Cost Optimisation of their workloads. 
+AWS customers can use this tool on their own environments and use the recommendations to improve the Security, Reliability, Operational Excellence, Performance Efficiency and Cost Optimisation of their workloads. 
 
 This tool aims to complement the [AWS Well Architected Tool](https://aws.amazon.com/well-architected-tool/). 
 
 ## How does it work?
-Service Screener uses [AWS Cloudshell](https://aws.amazon.com/cloudshell/), a free serivce that provides a browser-based shell to run scripts using the AWS CLI. It runs multiple `describe` and `get` API calls to determine the configuration of your environment. This will have no impact on the performance of your workloads within your account. 
+Service Screener uses [AWS Cloudshell](https://aws.amazon.com/cloudshell/), a free serivce that provides a browser-based shell to run scripts using the AWS CLI. It runs multiple `describe` and `get` API calls to determine the configuration of your environment.
 
 ## How much does it cost?
 The tool will cost less than $0.01 each time it is run. 
@@ -18,9 +16,9 @@ The tool will cost less than $0.01 each time it is run.
 ## Prerequisites
 1. Please review the [DISCLAIMER](./DISCLAIMER.md) before proceeding. 
 2. You must have an existing AWS Account.
-3. You must have an IAM User with sufficient read permissions. If you are unsure, you can use this sample policy [here](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_iam_read-only-console.html). Additionally, The IAM User must also have full access to AWS CloudShell i.e. AWSCloudShellFullAccess. 
+3. You must have an IAM User with sufficient read permissions. Here is a sample [policy](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_iam_read-only-console.html). Additionally, The IAM User must also have full access to AWS CloudShell i.e. AWSCloudShellFullAccess. 
 4. **(Optional)** You can create an S3 bucket to store Service Screener findings. 
-    - If you do not have sufficient permissions attached to your IAM User, you can create a new IAM Policy in the IAM console by copying the policy below into the policy editor and attach it to your IAM user.
+    - If you do not have sufficient permissions attached to your IAM User, you can create a new IAM Policy in the IAM console by copying the policy below into the policy editor and attaching it to your IAM user.
     ```
     {
         "Version": "2012-10-17",
@@ -49,7 +47,7 @@ The tool will cost less than $0.01 each time it is run.
 
 ![Launch AWS CloudShell](https://d39bs20xyg7k53.cloudfront.net/services-screener/p1-cloudshell.gif)
 
-In the AWS CloudShell terminal, run script this to install the dependencies:
+In the AWS CloudShell terminal, run this script this to install the dependencies:
 ```bash
 rm -rf service-screener
 git clone https://github.com/aws-samples/service-screener.git
@@ -61,7 +59,7 @@ source install.sh
 ![Install dependencies](https://d39bs20xyg7k53.cloudfront.net/services-screener/p2-dependencies.gif)
 
 ## Using Service Screener
-When running Service Screener, you will need to specify the regions and services you would like it to inspect. It currently supports Amazon EC2, Amazon RDS, AWS IAM, Amazon Opensearch, and Amazon S3.
+When running Service Screener, you will need to specify the regions and services you would like it to run on. It currently supports Amazon EC2, Amazon RDS, AWS IAM, Amazon Opensearch, and Amazon S3.
 
 We recommend running it in all regions where you have deployed workloads in. Adjust the code samples below to suit your needs then copy and paste it into Cloudshell to run Service Screener. 
 
