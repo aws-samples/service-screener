@@ -1,6 +1,7 @@
 <?php 
 use Aws\S3\S3Client;
 use AWS\S3\Exception;
+use AWS\S3\Exception\S3Exception as S3E;
 use Aws\S3Control\S3ControlClient;
 
 ## https://docs.aws.amazon.com/aws-sdk-php/v3/api/class-Aws.S3.S3Client.html
@@ -25,6 +26,7 @@ class s3 extends service{
     function getResources(){
         global $CONFIG;
         $buckets = $CONFIG->get('s3::buckets', []);
+        # $buckets = ['ap-southeast-1' => ['kuettai-personal']];
         if(empty($buckets)){
             $buckets = [];
             $results = $this->s3Client->listBuckets();
@@ -49,7 +51,24 @@ class s3 extends service{
             $CONFIG->set('s3::buckets', $buckets);
         }
         
-        return $buckets[$this->region];
+        $__buckets = $buckets[$this->region];
+        if(empty($this->tags))
+            return $__buckets;
+        
+        $filteredBuckets = [];
+        foreach($__buckets as $bucket){
+            try{
+                $result = $this->s3Client->getBucketTagging(['Bucket' => $bucket['Name']]);
+                $tags =$result->get('TagSet');
+            
+                if($this->resourceHasTags($tags))
+                    $filteredBuckets[] = $bucket;
+            }catch(S3E $e){
+                ## Do nothing, no tags has been define;clear
+            }
+        }
+        
+        return $filteredBuckets;
     }
     
     function advise(){

@@ -20,7 +20,7 @@ global $DEBUG, $CONFIG;
 $CONFIG = new Config();
 
 
-function scanByService($service, $regions, $scanInParallel = true){
+function scanByService($service, $regions, $tags = '', $scanInParallel = true){
     global $CONFIG, $CW;
 
     if($scanInParallel)
@@ -44,6 +44,10 @@ function scanByService($service, $regions, $scanInParallel = true){
                 $reg =  $regions[0];
             
             $serv = new $service[0]($reg);
+            
+            ## Support --filters
+            if(!empty($tags))
+                $serv->setTags($tags);
             
             if(!empty($service[1]))
                 $serv->setRules($service[1]);

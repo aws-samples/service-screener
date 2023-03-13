@@ -6,6 +6,7 @@
  * php screen.php -r "ap-southeast-1"
  * php screen.php -s "rds,ec2"
  * php screen.php --region "ap-southeast-1" --services "rds,ec2" --debug true --log sample/here.json
+ * php screen.php --region ap-southeast-1 --filters env=prod%department=hr,coe
  */
 class ArguParser{
     const OPTLISTS = [
@@ -16,7 +17,8 @@ class ArguParser{
         "t" => "test",
         "p" => "profile",
         "b" => "bucket",
-        "m" => "mode"
+        "m" => "mode",
+        "f" => "filters"
     ];
     
     static function Load(){

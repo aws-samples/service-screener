@@ -8,6 +8,7 @@ $feedbackFlag = $__cli_options['feedback'];
 $testmode = $__cli_options['test'];
 $bucket = $__cli_options['bucket'];
 $runmode = $__cli_options['mode'];
+$filters = $__cli_options['filters'];
 
 $DEBUG = ( in_array($debugFlag, CLI_TRUE_KEYWORD_ARRAY) || $debugFlag === true) ? true : false;
 $feedbackFlag = ( in_array($feedbackFlag, CLI_TRUE_KEYWORD_ARRAY) || $feedbackFlag === true) ? true : false;
@@ -54,7 +55,7 @@ exec('cd __fork; rm -f *.json; echo > tail.txt');
 $scanInParallel = sizeof($services) > 1 ? true : false;
 foreach($services as $service){
     ## Scripts move to bootstrap.inc.php
-    scanByService($service, $regions, $scanInParallel);
+    scanByService($service, $regions, $filters, $scanInParallel);
 };
 
 if($scanInParallel)

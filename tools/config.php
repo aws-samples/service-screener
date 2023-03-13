@@ -73,6 +73,10 @@ class Config{
         "bucket" => [
             "required" => false,
             "default" => false
+        ],
+        "filters" => [
+            "required" => false,
+            "default" => false
         ]
     ];
     
