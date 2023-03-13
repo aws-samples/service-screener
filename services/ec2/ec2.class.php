@@ -46,14 +46,22 @@ class ec2 extends service{
     }
     
     function getResources(){
-        $results = $this->ec2Client->describeInstances(['Filters' => $this->tags]);
+        $param = ['Filters' => $this->tags];
+        if(empty($this->tags))
+            $param = [];
+        
+        $results = $this->ec2Client->describeInstances($param);
         
         $arr = $results->get('Reservations');
         while($results->get('NextToken') !== null){
-            $results = $this->ec2Client->describeInstances([
-                'Filters' => $this->tags,
+            $param = [
                 'NextToken' => $results->get('NextToken')
-            ]);    
+            ];
+            
+            if(!empty($this->tags))
+                $param['Filters'] = $this->tags;
+            
+            $results = $this->ec2Client->describeInstances($param);    
             $arr = array_merge($arr, $results->get('Reservations'));
         }
         
@@ -121,16 +129,18 @@ class ec2 extends service{
                 return array();
             }
             
-            $results = $this->ec2Client->describeSecurityGroups([
-                'GroupIds' => $groupIds,
-                'Filters' => $this->tags
-            ]);
+            $param = ['GroupIds' => $groupIds];
+            if(!empty($this->tags))
+                $param['Filters'] = $this->tags;
+            
+            $results = $this->ec2Client->describeSecurityGroups($param);
             $arr = $results->get('SecurityGroups');
             while($results->get('NextToken') !== null){
-                $results = $this->ec2Client->describeSecurityGroups([
-                    'Filters' => $this->tags,
-                    'NextToken' => $results->get('NextToken')
-                ]);    
+                $param = ['NextToken' => $results->get('NextToken')];
+                if(!empty($this->tags))
+                    $param['Filters'] = $this->tags;
+                
+                $results = $this->ec2Client->describeSecurityGroups($param);
                 $arr = array_merge($arr, $results->get('SecurityGroups'));
             }
             
@@ -146,7 +156,6 @@ class ec2 extends service{
         $securityGroups = $elb['SecurityGroups'];
         $groupIds = array();
         
-        
         foreach($securityGroups as $groupId){
             $groupIds[] = $groupId;
         }
@@ -155,16 +164,18 @@ class ec2 extends service{
             return array();
         }
         
-        $results = $this->ec2Client->describeSecurityGroups([
-            'Filters' => $this->tags,
-            'GroupIds' => $groupIds
-        ]);
+        $param = ['GroupIds' => $groupIds];
+        if(!empty($this->tags))
+            $param['Filters'] = $this->tags;
+        
+        $results = $this->ec2Client->describeSecurityGroups($param);
         $arr = $results->get('SecurityGroups');
         while($results->get('NextToken') !== null){
-            $results = $this->ec2Client->describeSecurityGroups([
-                'Filters' => $this->tags,
-                'NextToken' => $results->get('NextToken')
-            ]);    
+            $param = ['NextToken' => $results->get('NextToken')];
+            if(!empty($this->tags))
+                $param['Filters'] = $this->tags;
+            
+            $results = $this->ec2Client->describeSecurityGroups($param);    
             $arr = array_merge($arr, $results->get('SecurityGroups'));
         }
         
@@ -172,14 +183,19 @@ class ec2 extends service{
     }
     
     function getEBS(){
-        $results = $this->ec2Client->describeVolumes(['Filters' => $this->tags]);
+        $param = [];
+        if(!empty($this->tags))
+            $param['Filters'] = $this->tags;
+        
+        $results = $this->ec2Client->describeVolumes($param);
         $arr = $results->get('Volumes');
         
         while($results->get('NextToken') !== null){
-            $results = $this->ec2Client->describeVolumes([
-                'Filters' => $this->tags,
-                'NextToken' => $results->get('NextToken')
-            ]);
+            $param = ['NextToken' => $results->get('NextToken')];
+            if(!empty($this->tags))
+                $param['Filters'] = $this->tags;
+                
+            $results = $this->ec2Client->describeVolumes($param);
             $arr = array_merge($arr, $results->get('Reservations'));
         }
         
