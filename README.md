@@ -74,6 +74,7 @@ screener --region ap-southeast-1
 ```
 screener --region ap-southeast-1 --services s3
 ```
+
 **Example 3: Running in the Singapore & North Virginia regions, checking all services**
 ```
 screener --region ap-southeast-1,us-east-1
