@@ -1,5 +1,7 @@
 # Service Screener
 
+This is an unofficial guidance tool for AWS environments.
+
 ## Overview
 Service Screener is a tool that runs automated checks on AWS environments and provide recommendations based on the [AWS Well Architected Framework](https://aws.amazon.com/architecture/well-architected/). 
 
