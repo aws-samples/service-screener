@@ -216,6 +216,9 @@ class ExcelBuilder{
     function __formatReporterDataToArray($service, $cardSummary){
         $arr = [];
         foreach($cardSummary as $check => $detail){
+            if(empty($detail['__links']))
+                $detail['__links'] = '';
+            
             $this->recommendations[$service][$check] = [$detail['shortDesc'], $detail['__links']];
             foreach($detail['__affectedResources'] as $region => $resources){
                 foreach($resources as $resource){
@@ -259,6 +262,9 @@ class ExcelBuilder{
     }
     
     function __formatHyperlink($arr){
+        if(empty($arr))
+            return '';
+        
         $recomm = [];
         foreach($arr as $p){
             $o = strpos($p, "href='");
