@@ -18,7 +18,18 @@ class efs extends service{
     
     function getResources(){
         $resources = $this->efsClient->DescribeFileSystems();
-        return $resources['FileSystems'];
+        $results = $resources['FileSystems'];
+        
+        if(empty($this->tags))
+            return $results;
+            
+        $filteredResults = [];
+        foreach($results as $ind => $efs){
+            if($this->resourceHasTags($efs['Tags']))
+                $filteredResults[] = $efs;
+        }
+        
+        return $filteredResults;
     }
     
     function advise(){

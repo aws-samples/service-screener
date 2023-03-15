@@ -114,7 +114,7 @@
     "additionalCost": 0,
     "needFullTest": 0,
     "criticality": "M",
-    "shortDesc": "Enable Performance Insights",
+    "shortDesc": "Do not use default params",
     "ref": []
   },
   "EnhancedMonitor":{
@@ -183,6 +183,19 @@
     "shortDesc": "Change to non-burstable instance type",
     "ref": [
 		"[BurstableInstance]<https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html>"
+		]
+  },
+  "FreeStorage20pct":{
+    "category": "R",
+    "^description": "[Reliability]: You have {$COUNT} instances has remaining free storage less than 20%",
+    "downtime": 1,
+    "slowness": 0,
+    "additionalCost": 1,
+    "needFullTest": 0,
+    "criticality": "H",
+    "shortDesc": "Increase storage",
+    "ref": [
+		"[Modify RDS Storage]<https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PIOPS.StorageTypes.html>"
 		]
   },
   "MYSQL__param_syncBinLog":{

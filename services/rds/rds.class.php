@@ -22,10 +22,7 @@ class rds extends service{
     
     ## Might need to loops
     function getResources(){
-        $results = $this->rdsClient->describeDBInstances(
-            // ['DBInstanceIdentifier' => 'mysql-bad']
-           # ['DBInstanceIdentifier' => 'mysql-5']
-        );
+        $results = $this->rdsClient->describeDBInstances();
         
         $arr = $results->get('DBInstances');
         while($results->get('Maker') !== null){
@@ -35,7 +32,17 @@ class rds extends service{
             $arr = array_merge($arr, $results->get('DBInstances'));
         }
         
-        return $arr;
+        if(empty($this->tags)){
+            return $arr;
+        }
+        
+        $finalArr = [];
+        foreach($arr as $i => $detail){
+            if($this->resourceHasTags($detail['TagList']))
+                $finalArr[] = $arr[$i];
+        }
+        
+        return $finalArr;
     }
     
     function advise(){

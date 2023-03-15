@@ -1,23 +1,26 @@
 # Service Screener
 
-This is an unofficial guidance tool for the AWS environment.
+This is an unofficial guidance tool for AWS environments.
 
 ## Overview
-Service Screener is a tool that allows AWS customers to automate checks on their environment and services based on the [AWS Well Architected Framework](https://aws.amazon.com/architecture/well-architected/). The purpose of this tool is to provide recommendations on how to improve upon existing setup and configuration. This is not intended to be a replacement of the [AWS Well Architected Tool](https://aws.amazon.com/well-architected-tool/) but rather a complement to it. 
+Service Screener is a tool that runs automated checks on AWS environments and provide recommendations based on the [AWS Well Architected Framework](https://aws.amazon.com/architecture/well-architected/). 
+
+AWS customers can use this tool on their own environments and use the recommendations to improve the Security, Reliability, Operational Excellence, Performance Efficiency and Cost Optimisation of their workloads. 
+
+This tool aims to complement the [AWS Well Architected Tool](https://aws.amazon.com/well-architected-tool/). 
+
+## How does it work?
+Service Screener uses [AWS Cloudshell](https://aws.amazon.com/cloudshell/), a free serivce that provides a browser-based shell to run scripts using the AWS CLI. It runs multiple `describe` and `get` API calls to determine the configuration of your environment.
+
+## How much does it cost?
+The tool will cost less than $0.01 each time it is run. 
 
 ## Prerequisites
 1. Please review the [DISCLAIMER](./DISCLAIMER.md) before proceeding. 
 2. You must have an existing AWS Account.
-3. You must have an IAM user with sufficient read permissions for all of the services to be reviewed. See example [here](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_iam_read-only-console.html). The user must also have full access to AWS CloudShell i.e. AWSCloudShellFullAccess. 
-4. [Login to your AWS account](https://docs.aws.amazon.com/cloudshell/latest/userguide/getting-started.html#start-session) using the above IAM user. 
-5. Launch your [AWS CloudShell](https://docs.aws.amazon.com/cloudshell/latest/userguide/getting-started.html#launch-region-shell) - you may use any region
-
-![Launch CloudShell](https://d39bs20xyg7k53.cloudfront.net/services-screener/p1-cloudshell.gif)
-
-## IAM Policy for S3 Bucket creation
-If you are creating an Amazon S3 bucket manually, you are required to create an IAM policy for the bucket. This IAM Policy is based on PoLP (Principle of Least Privilege) and allows the bucket to be created and the contents of the bucket to be read.
-- **Example**
-    - If you do not have sufficient permission sets attached to your IAM User, you can create a new IAM Policy in the IAM console by copying the below JSON into the policy editor and attach it to your IAM user.
+3. You must have an IAM User with sufficient read permissions. Here is a sample [policy](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_iam_read-only-console.html). Additionally, The IAM User must also have full access to AWS CloudShell i.e. AWSCloudShellFullAccess. 
+4. **(Optional)** You can create an S3 bucket to store Service Screener findings. 
+    - If you do not have sufficient permissions attached to your IAM User, you can create a new IAM Policy in the IAM console by copying the policy below into the policy editor and attaching it to your IAM user.
     ```
     {
         "Version": "2012-10-17",
@@ -41,7 +44,12 @@ If you are creating an Amazon S3 bucket manually, you are required to create an 
     ```
 
 ## Installing service-screener
-In the AWS CloudShell terminal, run this to install php:
+1. [Log in to your AWS account](https://docs.aws.amazon.com/cloudshell/latest/userguide/getting-started.html#start-session) using the IAM User with sufficient permissions described above. 
+2. Launch [AWS CloudShell](https://docs.aws.amazon.com/cloudshell/latest/userguide/getting-started.html#launch-region-shell) in any region. 
+
+![Launch AWS CloudShell](https://d39bs20xyg7k53.cloudfront.net/services-screener/p1-cloudshell.gif)
+
+In the AWS CloudShell terminal, run this script this to install the dependencies:
 ```bash
 rm -rf service-screener
 git clone https://github.com/aws-samples/service-screener.git
@@ -52,24 +60,37 @@ source install.sh
 
 ![Install dependencies](https://d39bs20xyg7k53.cloudfront.net/services-screener/p2-dependencies.gif)
 
-## Using service-screener
-When running screener, you can specify the regions you want it to run on, as well as the service(s) you want. Currently, you can choose to run it on Amazon EC2, Amazon RDS, AWS IAM and Amazon S3. 
-See below for examples:
-```bash
-## Singapore region only, and Amazon S3 service only
+## Using Service Screener
+When running Service Screener, you will need to specify the regions and services you would like it to run on. It currently supports Amazon EC2, Amazon RDS, AWS IAM, Amazon Opensearch, and Amazon S3.
+
+We recommend running it in all regions where you have deployed workloads in. Adjust the code samples below to suit your needs then copy and paste it into Cloudshell to run Service Screener. 
+
+**Example 1: Running in the Singapore region, checking all services**
+```
+screener --region ap-southeast-1 
+```
+
+**Example 2: Running in the Singapore region, checking only Amazon S3**
+```
 screener --region ap-southeast-1 --services s3
+```
 
-## Both Singapore & N. Virginia region with all services (Amazon EC2, AWS IAM, Amazon RDS, & Amazon S3 for now)
+**Example 3: Running in the Singapore & North Virginia regions, checking all services**
+```
 screener --region ap-southeast-1,us-east-1
+```
 
-## Both Singapore & N. Virginia region with Amazon RDS & AWS IAM
+**Example 4: Running in the Singapore & North Virginia regions, checking RDS and IAM**
+```
 screener --region ap-southeast-1,us-east-1 --services rds,iam
+```
 
-## Uploading the result to a S3 bucket with static website hosting enabled
+**Example 5: Running in the Singapore & North Virginia regions, checking RDS and IAM, and uploading the result to an S3 bucket with static website hosting enabled**
+```
 screener --region ap-southeast-1,us-east-1 --services rds,iam --bucket service-screener-<YOUR_ACCOUNT_ID>
 ```
 
-## Other parameters
+### Other parameters
 ```bash
 ##mode
 --mode api-full | api-raw | report
@@ -78,12 +99,11 @@ screener --region ap-southeast-1,us-east-1 --services rds,iam --bucket service-s
 # api-raw: raw findings
 # report: generate default web html
 ```
-
-
 ![Get Report](https://d39bs20xyg7k53.cloudfront.net/services-screener/p3-getreport.gif)
 
+### Downloading the report
 The output is generated as an output.zip file. 
-You can [download the file](https://docs.aws.amazon.com/cloudshell/latest/userguide/working-with-cloudshell.html#files-storage) in the CloudShell console. 
+You can [download the file](https://docs.aws.amazon.com/cloudshell/latest/userguide/working-with-cloudshell.html#files-storage) in the CloudShell console by clicking the *Download file* button under the *Actions* menu on the top right of the Cloudshell console. 
 
 ![Download Output](https://d39bs20xyg7k53.cloudfront.net/services-screener/p4-outputzip.gif)
 
@@ -96,20 +116,20 @@ You can navigate to the service(s) listed to see detailed findings on each servi
 
 ![Sample Output](https://d39bs20xyg7k53.cloudfront.net/services-screener/p5-sample.gif)
 
+## Using the report 
+The report provides you an easy-to-navigate dashboard of the various best-practice checks that were run. 
+
+Use the left navigation bar to explore the checks per service. You can then expand on each check to read a description of the check, find out which resources were highlighted, and read a recommendation on how to remediate the finding.  
+
 ## Contributing to service-screener
 We encourage public contributions! Please review [CONTRIBUTING](./CONTRIBUTING.md) for details on our code of conduct and development process.
 
 ## Contact
 Please review [CONTRIBUTING](./CONTRIBUTING.md) to raise any issues. 
-You can view our GitHub profiles below:
-* [KuetTai](https://github.com/KuetTai)
-* [Sarika](https://github.com/sarika-subram)
 
 ## Security
-
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
 
 ## License
-
 This project is licensed under the Apache-2.0 License.
 
