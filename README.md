@@ -85,7 +85,7 @@ screener --region ap-southeast-1,us-east-1
 screener --region ap-southeast-1,us-east-1 --services rds,iam
 ```
 
-**Example 5: Running in the Singapore regions, by filtered resources based on tags (e.g: Name=env Values=prod and Name=department Values=hr,coe)
+**Example 5: Running in the Singapore regions, by filtered resources based on tags (e.g: Name=env Values=prod and Name=department Values=hr,coe)**
 ```
 screener --region ap-southeast-1 --filters env=prod%department=hr,coe
 ```
