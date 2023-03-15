@@ -56,7 +56,7 @@
         "^description": "Dead Letter Queue: Dead Letter Queue (DLQ) has not been enabled for {$COUNT} of your Lambda. Enable DLQ to send unprocessed events to SQS or SNS topic.",
         "downtime": 0,
         "slowness": 0,
-        "additionalCost": 0,
+        "additionalCost": 1,
         "criticality": "M",
         "needFullTest": 1,
         "shortDesc": "Dead Letter Queue Disabled",
@@ -82,7 +82,7 @@
         "^description": "Enhanced Monitoring: Enhanced Monitoring is disabled for {$COUNT} of your Lambda functions. Enabled enhanced monitoring to better monitor, troubleshoot and optimize functions.",
         "downtime": 0,
         "slowness": 0,
-        "additionalCost": 0,
+        "additionalCost": 1,
         "criticality": "M",
         "needFullTest": 0,
         "shortDesc": "Enhanced Monitoring Disabled",
@@ -101,32 +101,6 @@
         "shortDesc": "",
         "ref": [
             "[Configuring provisioned concurrency]<https://docs.aws.amazon.com/lambda/latest/dg/provisioned-concurrency.html>"    
-        ]
-    },
-    "lambdaFullAccessToResource":{
-        "category": "S",
-        "^description": "Full Access to Resources: {$COUNT} of your Lambda has full access to resources. Please ensure that permission is configured based on least privilege principle.",
-        "downtime": 0,
-        "slowness": 0,
-        "additionalCost": 0,
-        "criticality": "H",
-        "needFullTest": 1,
-        "shortDesc": "Full Access to Resources",
-        "ref": [
-            "[Lambda permissions]<https://docs.aws.amazon.com/lambda/latest/dg/lambda-permissions.html>"    
-        ]
-    },
-    "lambdaAdminAccess":{
-        "category": "S",
-        "^description": "Admin Access: {$COUNT} of your Lambda has admin access. Please ensure that permission is configured based on least privilege principle.",
-        "downtime": 0,
-        "slowness": 0,
-        "additionalCost": 0,
-        "criticality": "H",
-        "needFullTest": 1,
-        "shortDesc": "Admin Access",
-        "ref": [
-            "[Lambda permissions]<https://docs.aws.amazon.com/lambda/latest/dg/lambda-permissions.html>"    
         ]
     },
     "lambdaTracingDisabled":{
@@ -181,7 +155,7 @@
             "[Lambda runtimes]<https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html>"    
         ]
     },
-    "lambdaNotInUsed":{
+    "lambdaNotInUsed7Days":{
         "category": "O",
         "^description": "Function not in used: {$COUNT} of your Lambda is not invoked in past 7 days. Remove unused function to maintain up-to-date environment and control costs",
         "downtime": 0,
@@ -189,7 +163,20 @@
         "additionalCost": 0,
         "criticality": "L",
         "needFullTest": 0,
-        "shortDesc": "Function not in used",
+        "shortDesc": "Function not in used for 7 days",
+        "ref": [
+            ""    
+        ]
+    },
+    "lambdaNotInUsed30Days":{
+        "category": "O",
+        "^description": "Function not in used: {$COUNT} of your Lambda is not invoked in past 30 days. Remove unused function to maintain up-to-date environment and control costs",
+        "downtime": 0,
+        "slowness": 0,
+        "additionalCost": 0,
+        "criticality": "L",
+        "needFullTest": 0,
+        "shortDesc": "Function not in used for 30 days",
         "ref": [
             ""    
         ]
