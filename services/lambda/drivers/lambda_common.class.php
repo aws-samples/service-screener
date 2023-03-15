@@ -1,30 +1,44 @@
 <?php 
 
 class lambda_common extends evaluator{
-    const LATEST_RUNTIME = [
-        'nodejs18.x',
-        'python3.9',
-        'java11',
-        'dotnetcore3.1',
-        'dotnet6',
-        'go1.x',
-        'ruby2.7',
+    const RUNTIME_PREFIX = [
+        'nodejs',
+        'python',
+        'java',
+        'dotnetcore',
+        'dotnet',
+        'go',
+        'ruby'
     ];
     
-    const DEPRECATED_RUNTIME = [
-        'python3.6',
-        'python2.7',
-        'dotnetcore2.1',
-        'ruby2.5',
-        'nodejs10.x',
-        'nodejs8.10',
-        'nodejs4.3',
-        'nodejs6.10',
-        'dotnetcore1.0',
-        'dotnetcore2.0',
-        'nodejs4.3-edge',
-        'nodejs'
+    const CUSTOM_RUNTIME_PREFIX = [
+        'provided'
     ];
+    
+    // const LATEST_RUNTIME = [
+    //     'nodejs18.x',
+    //     'python3.9',
+    //     'java11',
+    //     'dotnetcore3.1',
+    //     'dotnet6',
+    //     'go1.x',
+    //     'ruby2.7',
+    // ];
+    
+    // const DEPRECATED_RUNTIME = [
+    //     'python3.6',
+    //     'python2.7',
+    //     'dotnetcore2.1',
+    //     'ruby2.5',
+    //     'nodejs10.x',
+    //     'nodejs8.10',
+    //     'nodejs4.3',
+    //     'nodejs6.10',
+    //     'dotnetcore1.0',
+    //     'dotnetcore2.0',
+    //     'nodejs4.3-edge',
+    //     'nodejs'
+    // ];
     
     const CUSTOM_RUNTIME = [
         'provided.al2',
@@ -169,11 +183,48 @@ class lambda_common extends evaluator{
     }
     
     function __checkRuntime(){
+        $arr = include(__DIR__ .'/../../../vendor/aws/aws-sdk-php/src/data/lambda/2015-03-31/api-2.json.php');
         $runtime = $this->lambda['Runtime'];
-        if(in_array($runtime, self::DEPRECATED_RUNTIME)){
-            $this->results['lambdaRuntimeDeprecate'] = [-1, $this->functionName];
-        }else if(!in_array($runtime, self::LATEST_RUNTIME) && !in_array($runtime, self::CUSTOM_RUNTIME)){
-            $this->results['lambdaRuntimeUpdate'] = [-1, $this->functionName];
+        
+        $runtime_prefix = '';
+        $runtime_version = '';
+        foreach(self::CUSTOM_RUNTIME_PREFIX as $prefix){
+            if(str_starts_with($runtime, $prefix)){
+                return;
+            }
+        }
+        
+        foreach(self::RUNTIME_PREFIX as $prefix){
+            if(str_starts_with($runtime, $prefix)){
+                $runtime_prefix = $prefix;
+                
+                $replace_arr = [$runtime_prefix];
+                if(in_array($runtime_prefix, ['go', 'nodejs'])){
+                    array_push($replace_arr, '.x');
+                }
+                if($runtime_prefix == 'nodejs'){
+                    array_push($replace_arr, '-edge');
+                }
+                
+                $runtime_version = str_replace($replace_arr, '', $runtime);
+                break;
+            }
+        }
+        
+        foreach($arr['shapes']['Runtime']['enum'] as $option){
+            if(!str_starts_with($option, $runtime_prefix)){
+                continue;
+            }else{
+                $option_version = str_replace($replace_arr, '', $option);
+                if($option_version == ''){
+                    $option_version = 0;
+                }
+                
+                if($option_version > $runtime_version){
+                    $this->results['lambdaRuntimeUpdate'] = [-1, $this->functionName];
+                    return;
+                }
+            }
         }
         
         return;

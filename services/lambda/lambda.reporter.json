@@ -129,19 +129,6 @@
             "[Lambda execution role]<https://docs.aws.amazon.com/lambda/latest/dg/lambda-intro-execution-role.html>"    
         ]
     },
-    "lambdaRuntimeDeprecate":{
-        "category": "S",
-        "^description": "Runtime Deprecated: {$COUNT} of your Lambda is using runtime deprecated soon. Please ensure latest version of execution environment is used in your Lambda.",
-        "downtime": 1,
-        "slowness": 0,
-        "additionalCost": 0,
-        "criticality": "H",
-        "needFullTest": 1,
-        "shortDesc": "Runtime Deprecated",
-        "ref": [
-            "[Lambda runtimes]<https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html>"    
-        ]
-    },
     "lambdaRuntimeUpdate":{
         "category": "S",
         "^description": "Runtime Update Available: New runtime version available for {$COUNT} of your Lambda. Please update your Lambda runtime to enjoy the latest features and patches.",
