@@ -1,10 +1,4 @@
 <?php
-
-if(!file_exists(__DIR__.'/tools/console-table/src/LucidFrame/Console/ConsoleTable.php')){
-    exit("ConsoleTable module not found, run \"git submodule init\"" . PHP_EOL);   
-}
-
-require_once(__DIR__.'/tools/console-table/src/LucidFrame/Console/ConsoleTable.php');
 include_once(__DIR__.'/bootstrap.inc.php');
 
 const PILLARLOOKUP = [
