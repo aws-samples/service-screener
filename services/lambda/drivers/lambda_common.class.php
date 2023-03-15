@@ -15,36 +15,6 @@ class lambda_common extends evaluator{
         'provided'
     ];
     
-    // const LATEST_RUNTIME = [
-    //     'nodejs18.x',
-    //     'python3.9',
-    //     'java11',
-    //     'dotnetcore3.1',
-    //     'dotnet6',
-    //     'go1.x',
-    //     'ruby2.7',
-    // ];
-    
-    // const DEPRECATED_RUNTIME = [
-    //     'python3.6',
-    //     'python2.7',
-    //     'dotnetcore2.1',
-    //     'ruby2.5',
-    //     'nodejs10.x',
-    //     'nodejs8.10',
-    //     'nodejs4.3',
-    //     'nodejs6.10',
-    //     'dotnetcore1.0',
-    //     'dotnetcore2.0',
-    //     'nodejs4.3-edge',
-    //     'nodejs'
-    // ];
-    
-    const CUSTOM_RUNTIME = [
-        'provided.al2',
-        'provided'
-    ];
-    
     const CW_HISTORY_DAYS = [30,7];
     
     function __construct($lambda, $lambdaClient, $iamClient, $roleCount){
