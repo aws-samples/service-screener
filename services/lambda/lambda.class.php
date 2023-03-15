@@ -36,7 +36,37 @@ class lambda extends service{
             $nextToken = $results->get('NextMarker');
             
         }while(!empty($nextToken));
-        return $arr;
+        if(empty($this->tags))
+            return $arr;
+        
+        $filterLambda = [];
+        foreach($arr as $key => $lambda){
+            $results = $this->lambdaClient->listTags([
+                'Resource' => $lambda['FunctionArn']
+            ]);
+            $tags = $results['Tags'];
+            $this->resourceHasTags($tags);
+            
+            
+            if($this->resourceHasTags($tags)){
+                $filterLambda[] = $lambda;
+            }
+        }
+        
+        return $filterLambda;
+    }
+    
+    function resourceHasTags($tags){
+        foreach($this->tags as $tag){
+            $key = str_replace('tag:', '', $tag['Name']);
+            foreach($tag['Values'] as $v){
+                $value = $v;
+            }
+            if(array_key_exists($key, $tags) && $tags[$key] == $value){
+                return true;
+            }
+        }
+        return false;
     }
     
     function advise(){
