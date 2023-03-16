@@ -1,4 +1,8 @@
 <?php
+if(!file_exists(__DIR__.'/vendor/phplucidframe/console-table/src/LucidFrame/Console/ConsoleTable.php')){
+    exit("ConsoleTable module not found, run \"php composer.phar require phplucidframe/console-table\"" . PHP_EOL);
+}
+
 include_once(__DIR__.'/bootstrap.inc.php');
 
 const PILLARLOOKUP = [
