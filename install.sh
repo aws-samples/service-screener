@@ -10,7 +10,7 @@ if(sudo yum list installed | grep php-gd > /dev/null) then echo 'php-gd installe
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 php composer-setup.php
 php -r "unlink('composer-setup.php');"
-php -d memory_limit=-1 composer.phar require aws/aws-sdk-php phpoffice/phpspreadsheet phplucidframe/console-table
+php -d memory_limit=-1 composer.phar require aws/aws-sdk-php phpoffice/phpspreadsheet
 
 ## Setup Screener Alias
 alias screener='php -dopcache.enable_cli=1 -dopcache.jit_buffer_size=128M $(pwd)/screen.php'
