@@ -85,7 +85,12 @@ screener --region ap-southeast-1,us-east-1
 screener --region ap-southeast-1,us-east-1 --services rds,iam
 ```
 
-**Example 5: Running in the Singapore & North Virginia regions, checking RDS and IAM, and uploading the result to an S3 bucket with static website hosting enabled**
+**Example 5: Running in the Singapore regions, by filtered resources based on tags (e.g: Name=env Values=prod and Name=department Values=hr,coe)**
+```
+screener --region ap-southeast-1 --filters env=prod%department=hr,coe
+```
+
+**Example 6: Running in the Singapore & North Virginia regions, checking RDS and IAM, and uploading the result to an S3 bucket with static website hosting enabled**
 ```
 screener --region ap-southeast-1,us-east-1 --services rds,iam --bucket service-screener-<YOUR_ACCOUNT_ID>
 ```
