@@ -15,6 +15,7 @@ class lambda_common extends evaluator{
         'provided'
     ];
     
+    const RUNTIME_PATH = VENDOR_DIR.'/aws/aws-sdk-php/src/data/lambda/2015-03-31/api-2.json.php';
     const CW_HISTORY_DAYS = [30,7];
     
     function __construct($lambda, $lambdaClient, $iamClient, $roleCount){
@@ -111,19 +112,17 @@ class lambda_common extends evaluator{
     }
     
     function __checkEnhancedMonitor(){
-        $enabled = false;
         if(isset($this->lambda['Layers'])){
            $layers = $this->lambda['Layers'];
            foreach($layers as $layer){
                if(strpos($layer['Arn'], 'LambdaInsightsExtension')){
-                  $enabled = true;
+                  return;
                }
            }
         }
         
-        if(!$enabled){
-            $this->results['lambdaEnhancedMonitoringDisabled'] = [-1, $this->functionName];
-        }
+        $this->results['lambdaEnhancedMonitoringDisabled'] = [-1, $this->functionName];
+        return;
     }
     
     function __checkProvisionedConcurrency(){
@@ -156,7 +155,11 @@ class lambda_common extends evaluator{
     }
     
     function __checkRuntime(){
-        $arr = include(VENDOR_DIR.'/aws/aws-sdk-php/src/data/lambda/2015-03-31/api-2.json.php');
+        if(!file_exists(self::RUNTIME_PATH)){
+            __warn("Skipped runtime version check due to unable to locate runtime option path");
+            return;    
+        }
+        $arr = include(self::RUNTIME_PATH);
         $runtime = $this->lambda['Runtime'];
         
         $runtime_prefix = '';

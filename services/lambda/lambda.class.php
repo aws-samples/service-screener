@@ -25,7 +25,7 @@ class lambda extends service{
         $arr = [];
         $nextToken = '';
         do{
-            if(!empty($nextToekn)){
+            if(!empty($nextToken)){
                 $results = $this->lambdaClient->ListFunctions([
                     "Marker" => $nextToken
                 ]);
