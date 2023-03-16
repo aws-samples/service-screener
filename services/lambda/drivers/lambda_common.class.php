@@ -71,6 +71,7 @@ class lambda_common extends evaluator{
             foreach($urlConfigs['FunctionUrlConfigs'] as $config){
                 if($config['AuthType'] == 'NONE'){
                     $this->results['lambdaURLWithoutAuth'] = [-1, $this->functionName];
+                    return;
                 }
             }
         }
@@ -138,7 +139,9 @@ class lambda_common extends evaluator{
     }
     
     function __checkTracingEnabled(){
-        if($this->lambda['TracingConfig']['Mode'] == 'PassThrough'){
+        if(isset($this->lambda['TracingConfig']) 
+            && isset($this->lambda['TracingConfig']['Mode']) 
+            && $this->lambda['TracingConfig']['Mode'] == 'PassThrough'){
             $this->results['lambdaTracingDisabled'] = [-1, $this->functionName];
         }
         
@@ -153,7 +156,7 @@ class lambda_common extends evaluator{
     }
     
     function __checkRuntime(){
-        $arr = include(__DIR__ .'/../../../vendor/aws/aws-sdk-php/src/data/lambda/2015-03-31/api-2.json.php');
+        $arr = include(VENDOR_DIR.'/aws/aws-sdk-php/src/data/lambda/2015-03-31/api-2.json.php');
         $runtime = $this->lambda['Runtime'];
         
         $runtime_prefix = '';

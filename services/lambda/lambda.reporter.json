@@ -161,7 +161,7 @@
         "downtime": 0,
         "slowness": 0,
         "additionalCost": 0,
-        "criticality": "L",
+        "criticality": "H",
         "needFullTest": 0,
         "shortDesc": "Function not in used for 30 days",
         "ref": [
