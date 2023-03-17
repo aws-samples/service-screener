@@ -56,7 +56,7 @@ class lambda extends service{
         return $filterLambda;
     }
     
-    ## Override Parrent Function due to diffferent tagging format in Lambda API
+    ## Override parent function due to different tagging format in Lambda API
     function resourceHasTags($tags){
         foreach($this->tags as $tag){
             $key = str_replace('tag:', '', $tag['Name']);

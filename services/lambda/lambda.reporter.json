@@ -98,7 +98,7 @@
         "additionalCost": 1,
         "criticality": "L",
         "needFullTest": 1,
-        "shortDesc": "",
+        "shortDesc": "Provisioned Concurrency Disabled",
         "ref": [
             "[Configuring provisioned concurrency]<https://docs.aws.amazon.com/lambda/latest/dg/provisioned-concurrency.html>"    
         ]

@@ -32,7 +32,7 @@ class lambda_common extends evaluator{
             'FunctionName' => $this->functionName
         ]);
         if(!empty($urlConfig['FunctionUrlConfigs'])){
-            $this->results['lambdaURLInUsed'] = [-1, $this->functionName];
+            $this->results['lambdaURLInUsed'] = [-1, "Enabled"];
         }
         return;
     }
@@ -47,7 +47,7 @@ class lambda_common extends evaluator{
             ]);
         }catch(Exception $e){
             if($e->getAwsErrorCode() == 'NoSuchEntity'){
-                $this->results['lambdaMissingRole'] = [-1, $this->functionName];
+                $this->results['lambdaMissingRole'] = [-1, ''];
             }else{
                 throw $e;
             }
@@ -71,7 +71,7 @@ class lambda_common extends evaluator{
         if(!empty($urlConfigs['FunctionUrlConfigs'])){
             foreach($urlConfigs['FunctionUrlConfigs'] as $config){
                 if($config['AuthType'] == 'NONE'){
-                    $this->results['lambdaURLWithoutAuth'] = [-1, $this->functionName];
+                    $this->results['lambdaURLWithoutAuth'] = [-1, $config['AuthType']];
                     return;
                 }
             }
@@ -85,7 +85,7 @@ class lambda_common extends evaluator{
             'FunctionName' => $this->functionName
         ]);
         if(!isset($codeSign['CodeSigningConfigArn'])){
-            $this->results['lambdaCodeSigningDisabled'] = [-1, $this->functionName];
+            $this->results['lambdaCodeSigningDisabled'] = [-1, 'Disabled'];
         }
         
         return;
@@ -97,7 +97,7 @@ class lambda_common extends evaluator{
         ]);
         
         if(!isset($config['DeadLetterConfig'])){
-            $this->results['lambdaDeadLetterQueueDisabled'] = [-1, $this->functionName];
+            $this->results['lambdaDeadLetterQueueDisabled'] = [-1, 'Disabled'];
         }
         
         return;
@@ -106,7 +106,7 @@ class lambda_common extends evaluator{
     function __checkEnvVarDefaultKey(){
         $functionName = $this->lambda['FunctionName'];
         if(!isset($this->lambda['KMSKeyArn'])){
-            $this->results['lambdaCMKEncryptionDisabled'] = [-1, $this->functionName];
+            $this->results['lambdaCMKEncryptionDisabled'] = [-1, 'Disabled'];
         }
         return;
     }
@@ -121,7 +121,7 @@ class lambda_common extends evaluator{
            }
         }
         
-        $this->results['lambdaEnhancedMonitoringDisabled'] = [-1, $this->functionName];
+        $this->results['lambdaEnhancedMonitoringDisabled'] = [-1, 'Disabled'];
         return;
     }
     
@@ -131,7 +131,7 @@ class lambda_common extends evaluator{
         ]);
         
         if(!isset($concurrency['ReservedConcurrentExecutions'])){
-            $this->results['lambdaReservedConcurrencyDisabled'] = [-1, $this->functionName];
+            $this->results['lambdaReservedConcurrencyDisabled'] = [-1, 'Disabled'];
         }
         
         return;
@@ -141,7 +141,7 @@ class lambda_common extends evaluator{
         if(isset($this->lambda['TracingConfig']) 
             && isset($this->lambda['TracingConfig']['Mode']) 
             && $this->lambda['TracingConfig']['Mode'] == 'PassThrough'){
-            $this->results['lambdaTracingDisabled'] = [-1, $this->functionName];
+            $this->results['lambdaTracingDisabled'] = [-1, 'Disabled'];
         }
         
         return;
@@ -149,7 +149,7 @@ class lambda_common extends evaluator{
     
     function __checkRoleReused(){
         if($this->roleCount[$this->lambda['Role']] > 1){
-            $this->results['lambdaRoleReused'] = [-1, $this->functionName];
+            $this->results['lambdaRoleReused'] = [-1, $this->lambda['Role']];
         }
         return;
     }
@@ -197,7 +197,7 @@ class lambda_common extends evaluator{
                 }
                 
                 if($option_version > $runtime_version){
-                    $this->results['lambdaRuntimeUpdate'] = [-1, $this->functionName];
+                    $this->results['lambdaRuntimeUpdate'] = [-1, $runtime];
                     return;
                 }
             }
@@ -242,7 +242,7 @@ class lambda_common extends evaluator{
             $cnt = $this->getInvocationCount($day);
             
             if($cnt == 0){
-                $this->results['lambdaNotInUsed' . $day . 'Days'] = [-1, $this->functionName];
+                $this->results['lambdaNotInUsed' . $day . 'Days'] = [-1, ''];
                 return;
             }
         }
