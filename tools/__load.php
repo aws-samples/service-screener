@@ -9,6 +9,8 @@ include_once(__DIR__ .'/policy.class.php');
 include_once(__DIR__ .'/uploader.class.php');
 include_once(__DIR__ .'/excelBuilder.class.php');
 
+use Aws\Ec2\Ec2Client;
+
 function __pr($o){
     global $DEBUG;
     
@@ -70,6 +72,10 @@ function __formatException($e){
 }
 
 function __aws_parseInstanceFamily($instanceFamilyInString){
+    global $CURRENT_REGION, $CONFIG;
+    if(empty($CURRENT_REGION))
+        $CURRENT_REGION = 'us-east-1';
+    
     $arr = explode('.', $instanceFamilyInString);
     if(sizeof($arr) > 3 || sizeof($arr) == 1){
         return $instanceFamilyInString;
@@ -90,16 +96,53 @@ function __aws_parseInstanceFamily($instanceFamilyInString){
         $output
     );
     
+    $cpu = $memory = 0;
+    
+    $family = "$p.$s";
+    $CACHE_KEYWORD = 'INSTANCE_SPEC::'.$family;
+    $spec = $CONFIG->get($CACHE_KEYWORD);
+    if(empty($spec)){
+        echo "<NO CACHE FOUND>";
+        $arr = [];
+        $arr['region'] = $CURRENT_REGION;
+        $arr['version'] = CONFIG::AWS_SDK['EC2CLIENT_VERS'];
+        $ec2c = new Ec2Client($arr);
+        
+        $resp = $ec2c->describeInstanceTypes([
+            'InstanceTypes' => [$family]
+        ]);
+        
+        $iType = $resp->get('InstanceTypes');
+        if(!empty($iType)){
+            $info = $iType[0];
+            $cpu = $info['VCpuInfo']['DefaultVCpus'];
+            $memory = round($info['MemoryInfo']['SizeInMiB']/1024, 2);
+        }
+        
+        $spec = [
+            'vcpu' => $cpu,
+            'memoryInGiB' => $memory
+        ];
+        
+        $CONFIG->set($CACHE_KEYWORD, $spec);
+    }
+    
     $result = [
         "full" => $instanceFamilyInString,
         "prefix" => $p,
         "suffix" => $s,
+        "specification" => [
+            'vcpu' => $cpu,
+            'memoryInGiB' => $memory
+        ],
         "prefixDetail" => [
             "family" => $output[1],
             "version" => $output[2],
             "attributes" => $output[3]
         ]
     ];
+    
+    print_r($result);
     
     return $result;
 }
