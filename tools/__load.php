@@ -101,6 +101,7 @@ function __aws_parseInstanceFamily($instanceFamilyInString){
     $family = "$p.$s";
     $CACHE_KEYWORD = 'INSTANCE_SPEC::'.$family;
     $spec = $CONFIG->get($CACHE_KEYWORD);
+    print_r($spec);
     if(empty($spec)){
         echo "<NO CACHE FOUND>";
         $arr = [];
@@ -131,10 +132,7 @@ function __aws_parseInstanceFamily($instanceFamilyInString){
         "full" => $instanceFamilyInString,
         "prefix" => $p,
         "suffix" => $s,
-        "specification" => [
-            'vcpu' => $cpu,
-            'memoryInGiB' => $memory
-        ],
+        "specification" => $spec,
         "prefixDetail" => [
             "family" => $output[1],
             "version" => $output[2],
