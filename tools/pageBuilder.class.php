@@ -4,7 +4,9 @@ class pageBuilder{
         'ec2' => 'server',
         'rds' => 'database',
         's3' => 'hdd',
-        'iam' => 'users'
+        'iam' => 'users',
+        'guardduty' => 'shield-alt',
+        'opensearch' => 'warehouse'
     ];
 
     protected $pageTemplate = [
@@ -144,9 +146,9 @@ class pageBuilder{
     }
 
     function generateCategoryBadge($category, $addtionalHtmlAttr){
-        $validCategory = ['R', 'S', 'O', 'P', 'C'];
-        $colorByCategory = ['info', 'danger', 'primary', 'success', 'warning'];
-        $nameByCategory = ['Reliability', 'Security', 'Operation Excellence', 'Performance Efficiency', 'Cost Optimization'];
+        $validCategory = ['R', 'S', 'O', 'P', 'C', 'T'];
+        $colorByCategory = ['info', 'danger', 'primary', 'success', 'warning', 'info'];
+        $nameByCategory = ['Reliability', 'Security', 'Operation Excellence', 'Performance Efficiency', 'Cost Optimization', 'Text'];
         if( !in_array($category, $validCategory)){
             $category = 'X';
             $color = 'info';
@@ -331,10 +333,14 @@ class pageBuilder{
             'data' => [],
             'backgroundColor' => []
         ];
+        
+        $idx = 0;
         foreach($datasets as $key => $num){
             $label[] = $key;
             $arr['data'][] = $num;
-            $arr['backgroundColor'][] = $this->__randomHexColorCode();
+            $arr['backgroundColor'][] = $this->__randomHexColorCode($idx);
+            
+            $idx++;
         }
 
         return [$label, $arr];
@@ -342,27 +348,45 @@ class pageBuilder{
 
     function __enrichChartData($datasets){
         $arr = [];
+        $idx = 0;
         foreach($datasets as $key => $num){
             $arr[] = [
                 'label' => $key,
-                'backgroundColor' => $this->__randomRGB(),
+                'backgroundColor' => $this->__randomRGB($idx),
                 'data' => $num
             ];
+            $idx++;
         }
 
         return $arr;
     }
 
-    function __randomRGB(){
-        $r1 = rand(1,255);
-        $r2 = rand(1,255);
-        $r3 = rand(1,255);
-        $op = rand(8, 10)/10;
-        return "rgba($r1, $r2, $r3, $op)";
+    function __randomRGB($idx){
+        # ["#e27c7c", "#a86464", "#6d4b4b", "#503f3f", "#333333", "#3c4e4b", "#466964", "#599e94", "#6cd4c5"]
+        # only random if more than > 9
+        $r1Arr = [226, 168, 109, 80 , 51 , 60 , 70 , 89 , 108];
+        $r2Arr = [124, 100, 75 , 63 , 51 , 78 , 105, 158, 212];
+        $r3Arr = [124, 100, 75 , 63 , 51 , 75 , 100, 148, 197];
+        
+        if($idx > sizeof($r1Arr)){
+            $r1 = rand(1,255);
+            $r2 = rand(1,255);
+            $r3 = rand(1,255);    
+        }else{
+            $r1 = $r1Arr[$idx];
+            $r2 = $r2Arr[$idx];
+            $r3 = $r3Arr[$idx];
+        }
+        
+        return "rgba($r1, $r2, $r3, 1)";
     }
 
-    function __randomHexColorCode(){
-        return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+    function __randomHexColorCode($idx){
+        $color = ["#e27c7c", "#a86464", "#6d4b4b", "#503f3f", "#333333", "#3c4e4b", "#466964", "#599e94", "#6cd4c5"];
+        if($idx > sizeof($color))
+            return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+        else
+            return $color[$idx];
     }
 
     function generateTitleWithCategory($count, $title, $category, $color='info'){
@@ -514,11 +538,14 @@ class pageBuilder{
         foreach($services as $name => $count){
             $class = $name == $activeService ? 'active' : '';
             $icon = $this->__navIcon($name);
+            
+            $__count = $count;
+            if($name=='guardduty') $__count = '';
 
             $output[] = "<li class='nav-item'>
             <a href='{$name}.html' class='nav-link {$class}'>
                 <i class='nav-icon fas fa-{$icon}'></i>
-                <p>".strtoupper($name)." <span class='badge badge-info right'>{$count}</span></p>
+                <p>".strtoupper($name)." <span class='badge badge-info right'>{$__count}</span></p>
             </a>
             </li>
             ";
@@ -703,6 +730,7 @@ EOL;
     <option value='S'>Security</option>
     <option value='P'>Performance Efficiency</option>
     <option value='C'>Cost Optimization</option>
+    <option value='T'>*Text*</option>
   </select>
 </div>
 EOL;

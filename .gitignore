@@ -1,8 +1,10 @@
 *.zip
+*.xlsx
 composer.lock
 composer.phar
 vendor
 localtest.php
 __fork
+tools/console-table
 error.txt
 .DS_Store

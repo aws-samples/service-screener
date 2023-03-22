@@ -1,10 +1,8 @@
 <?php
-
-if(!file_exists(__DIR__.'/tools/console-table/src/LucidFrame/Console/ConsoleTable.php')){
-    exit("ConsoleTable module not found, run \"git submodule init\"" . PHP_EOL);   
+if(!file_exists(__DIR__.'/vendor/phplucidframe/console-table/src/LucidFrame/Console/ConsoleTable.php')){
+    exit("ConsoleTable module not found, run \"php composer.phar require phplucidframe/console-table\"" . PHP_EOL);
 }
 
-require_once(__DIR__.'/tools/console-table/src/LucidFrame/Console/ConsoleTable.php');
 include_once(__DIR__.'/bootstrap.inc.php');
 
 const PILLARLOOKUP = [
@@ -56,7 +54,8 @@ function printPillarSummary($reporterJsons){
         'P' => 0,
         'S' => 0,
         'R' => 0,
-        'O' => 0
+        'O' => 0,
+        'T' => 0
     ];
     $pillarTable = new LucidFrame\Console\ConsoleTable();
     $pillarTable->addHeader('Service');
@@ -85,7 +84,7 @@ function printPillarSummary($reporterJsons){
         $pillarTable->addColumn(addPad($s));
         
         foreach($pillarSumm as $k => $v){
-            $total[$k] += $v;   
+            $total[$k] += $v;
         }
     }
     

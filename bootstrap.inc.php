@@ -20,7 +20,7 @@ global $DEBUG, $CONFIG;
 $CONFIG = new Config();
 
 
-function scanByService($service, $regions, $scanInParallel = true){
+function scanByService($service, $regions, $tags = '', $scanInParallel = true){
     global $CONFIG, $CW;
 
     if($scanInParallel)
@@ -44,6 +44,10 @@ function scanByService($service, $regions, $scanInParallel = true){
                 $reg =  $regions[0];
             
             $serv = new $service[0]($reg);
+            
+            ## Support --filters
+            if(!empty($tags))
+                $serv->setTags($tags);
             
             if(!empty($service[1]))
                 $serv->setRules($service[1]);
@@ -78,7 +82,9 @@ function scanByService($service, $regions, $scanInParallel = true){
     }
 }
 
-function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $regions, $uploadToS3){
+function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $regions, $uploadToS3, $bucket){
+    global $CONFIG;
+    $stsInfo = $CONFIG->get('stsInfo');
     if($runmode == 'api-raw'){
         file_put_contents(API_JSON, json_encode($contexts));
     }else{
@@ -87,6 +93,18 @@ function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $
             $regions[] = 'GLOBAL';   
         
         $rawServices = [];
+        
+        if($runmode == 'report'){
+            $params = [];
+            foreach($CONFIG->get('__SS_PARAMS') as $key => $val){
+                if(!empty($val))
+                    $params[] = "--$key $val";
+            }
+            
+            $summary = $CONFIG->get('SCREENER-SUMMARY');
+            $excelObj = new ExcelBuilder($stsInfo['Account'], implode(' ', $params));
+        }
+        
         foreach($contexts as $service => $resultSets){
             $rawServices[] = $service;
             
@@ -104,17 +122,25 @@ function generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $
                     
                 $pb = new $pageBuilderClass($service, $reporter, $serviceStat, $regions);
                 $pb->buildPage();
+                
+                ##Excel
+                if(!in_array($service, ['guardduty']))
+                    $excelObj->generateWorkSheet($service, $reporter->cardSummary);
             }else{
                 $apiResultArray[$service]['summary'] = $reporter->getCard();
                 $apiResultArray[$service]['detail'] = $reporter->getDetail();
             }
         }
-        
+        ## <serviceFamily>:<region>:<serviceName>:<checks>
         
         ## pageBuilderForDashboard
         if($runmode == 'report'){
             $dashPB = new dashboardPageBuilder('index', [], $serviceStat, $regions);
             $dashPB->buildPage();
+            
+            ## dashPB will gather summary info, hence rearrange the sequences
+            $excelObj->buildSummaryPage($summary);
+            $excelObj->__save(HTML_DIR.'/');
         
             exec('cd adminlte; zip -r output.zip html; mv output.zip ../output.zip');
             __info("Pages generated, download \033[1;42moutput.zip\033[0m to view");

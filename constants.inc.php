@@ -3,6 +3,7 @@
 define('ROOT_DIR', __DIR__);
 define('SERVICE_DIR', __DIR__.'/services');
 define('TEMPLATE_DIR', __DIR__.'/templates');
+define('VENDOR_DIR', __DIR__.'/vendor');
 
 define('HTML_FOLDER', 'adminlte/html');
 define('HTML_DIR', __DIR__.'/'.HTML_FOLDER);

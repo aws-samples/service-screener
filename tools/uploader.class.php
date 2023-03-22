@@ -84,4 +84,35 @@ class Uploader {
             return false;
         }
     }
+    
+    static function getConfirmationToUploadToS3($bucket): bool{
+        $uploadToS3 = false;
+        if ($bucket) {
+            __info("You have specified a 'bucket' parameter, the report will be uploaded to S3.");
+            __info("The report will be available through public internet, please ensure you understand the risk of exposing the report to the internet. You will be fully RESPONSIBLE on this data.");
+    
+            $attempt = 0;
+            do {
+                if($attempt > 0)
+                    __warn("You have entered an invalid option. Please try again.");
+                
+                $confirm = strtolower(readline("Please enter 'y' for yes, 'n' for no, or 'c' to continue without uploading the report to S3 : "));    
+                $attempt++;
+            } while(!in_array($confirm, ['y', 'n', 'c']));
+        
+            if ($confirm == 'y') {
+                $uploadToS3 = true;
+            }
+            
+            if ($confirm == 'n') {
+                __info("You have chosen not to upload the report to S3.");
+            }
+        
+            if ($confirm == 'c') {
+                __info("You have chosen not to upload the report to S3. Continuing...");
+            }
+        }
+        
+        return $uploadToS3;
+    }
 }
