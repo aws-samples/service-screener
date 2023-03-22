@@ -21,7 +21,7 @@ $CONFIG = new Config();
 
 
 function scanByService($service, $regions, $tags = '', $scanInParallel = true){
-    global $CONFIG, $CW;
+    global $CONFIG, $CW, $CURRENT_REGION;
 
     if($scanInParallel)
         $pid = pcntl_fork();
@@ -37,6 +37,7 @@ function scanByService($service, $regions, $tags = '', $scanInParallel = true){
         $__regions = in_array($service[0], CONFIG::GLOBAL_SERVICES) ? ['GLOBAL'] : $regions;
         
         foreach($__regions as $region){
+            $CURRENT_REGION = $region;
             $CW = new cloudwatch($region);
             
             $reg = $region;
