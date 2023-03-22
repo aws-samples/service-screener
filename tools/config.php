@@ -19,13 +19,15 @@ class Config{
         'SSMCLIENT_VERS' => '2014-11-06',
         'AOSCLIENT_VERS' => '2021-01-01',
         'EFSCLIENT_VERS' => '2015-02-01',
+        'GUARDDUTYCLIENT_VERS' => '2017-11-28',
+        'LAMBDACLIENT_VERS' => '2015-03-31',
         'signature_version' => 'v4'
     ];
     
     const ADVISOR = [
         'TITLE' => 'Service Screener',
-        'VERSION' => '1.0.1',
-        'LAST_UPDATE' => '3-Jan-2023'
+        'VERSION' => '1.1.0',
+        'LAST_UPDATE' => '22-Feb-2023'
     ];
     
     const ADMINLTE = [
@@ -43,7 +45,7 @@ class Config{
         "services" => [
             "required" => false,
             "emptymsg" => "Missing --services, using default value: \$defaultValue",
-            "default" => "rds,ec2,iam,s3,efs"
+            "default" => "rds,ec2,iam,s3,efs,opensearch,guardduty"
         ],
         "debug" => [
             "required" => false,
@@ -72,6 +74,10 @@ class Config{
         "bucket" => [
             "required" => false,
             "default" => false
+        ],
+        "filters" => [
+            "required" => false,
+            "default" => false
         ]
     ];
     
@@ -82,8 +88,6 @@ class Config{
     static function setAccountInfo($__AWS_CONFIG){
         global $CONFIG, $PHPSDK_CRED_PROVIDER, $PHPSDK_CRED_PROFILE;
         $stsInfo = [];
-        
-        
 
         __info(" -- Acquiring identify info...");
         try{

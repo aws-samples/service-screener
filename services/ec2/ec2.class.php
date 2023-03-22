@@ -46,13 +46,22 @@ class ec2 extends service{
     }
     
     function getResources(){
-        $results = $this->ec2Client->describeInstances();
+        $param = ['Filters' => $this->tags];
+        if(empty($this->tags))
+            $param = [];
+        
+        $results = $this->ec2Client->describeInstances($param);
         
         $arr = $results->get('Reservations');
         while($results->get('NextToken') !== null){
-            $results = $this->ec2Client->describeInstances([
+            $param = [
                 'NextToken' => $results->get('NextToken')
-            ]);    
+            ];
+            
+            if(!empty($this->tags))
+                $param['Filters'] = $this->tags;
+            
+            $results = $this->ec2Client->describeInstances($param);    
             $arr = array_merge($arr, $results->get('Reservations'));
         }
         
@@ -61,6 +70,7 @@ class ec2 extends service{
     
     function getELB(){
         $results = $this->elbClient->describeLoadBalancers();
+        ## TODO, use describeTags
         
         $arr = $results->get('LoadBalancers');
         while($results->get('NextToken') !== null){
@@ -71,7 +81,23 @@ class ec2 extends service{
             $arr = array_merge($arr, $results->get('LoadBalancers'));
         }
         
-        return $arr;
+        if(empty($this->tags))
+            return $arr;
+        
+        $filteredResults = [];
+        foreach($arr as $ind => $elb){
+            ##Can supports up to 20 resources;
+            $tmp = $this->elbClient->describeTags([
+                'ResourceArns' => [$elb['LoadBalancerArn']]
+            ]);
+            
+            $tagDesc = $tmp->get('TagDescriptions');
+            if(isset($tagDesc) && isset($tagDesc[0]) && isset($tagDesc[0]['Tags']) && $this->resourceHasTags($tagDesc[0]['Tags'])){
+                $filteredResults[] = $elb;
+            }
+        }
+        
+        return $filteredResults;
     }
     
     function getELBClassic(){
@@ -103,14 +129,18 @@ class ec2 extends service{
                 return array();
             }
             
-            $results = $this->ec2Client->describeSecurityGroups([
-                'GroupIds' => $groupIds
-            ]);
+            $param = ['GroupIds' => $groupIds];
+            if(!empty($this->tags))
+                $param['Filters'] = $this->tags;
+            
+            $results = $this->ec2Client->describeSecurityGroups($param);
             $arr = $results->get('SecurityGroups');
             while($results->get('NextToken') !== null){
-                $results = $this->ec2Client->describeSecurityGroups([
-                    'NextToken' => $results->get('NextToken')
-                ]);    
+                $param = ['NextToken' => $results->get('NextToken')];
+                if(!empty($this->tags))
+                    $param['Filters'] = $this->tags;
+                
+                $results = $this->ec2Client->describeSecurityGroups($param);
                 $arr = array_merge($arr, $results->get('SecurityGroups'));
             }
             
@@ -126,8 +156,6 @@ class ec2 extends service{
         $securityGroups = $elb['SecurityGroups'];
         $groupIds = array();
         
-        
-        
         foreach($securityGroups as $groupId){
             $groupIds[] = $groupId;
         }
@@ -136,14 +164,18 @@ class ec2 extends service{
             return array();
         }
         
-        $results = $this->ec2Client->describeSecurityGroups([
-            'GroupIds' => $groupIds
-        ]);
+        $param = ['GroupIds' => $groupIds];
+        if(!empty($this->tags))
+            $param['Filters'] = $this->tags;
+        
+        $results = $this->ec2Client->describeSecurityGroups($param);
         $arr = $results->get('SecurityGroups');
         while($results->get('NextToken') !== null){
-            $results = $this->ec2Client->describeSecurityGroups([
-                'NextToken' => $results->get('NextToken')
-            ]);    
+            $param = ['NextToken' => $results->get('NextToken')];
+            if(!empty($this->tags))
+                $param['Filters'] = $this->tags;
+            
+            $results = $this->ec2Client->describeSecurityGroups($param);    
             $arr = array_merge($arr, $results->get('SecurityGroups'));
         }
         
@@ -151,13 +183,19 @@ class ec2 extends service{
     }
     
     function getEBS(){
-        $results = $this->ec2Client->describeVolumes();
+        $param = [];
+        if(!empty($this->tags))
+            $param['Filters'] = $this->tags;
+        
+        $results = $this->ec2Client->describeVolumes($param);
         $arr = $results->get('Volumes');
         
         while($results->get('NextToken') !== null){
-            $results = $this->ec2Client->describeVolumes([
-                'NextToken' => $results->get('NextToken')
-            ]);
+            $param = ['NextToken' => $results->get('NextToken')];
+            if(!empty($this->tags))
+                $param['Filters'] = $this->tags;
+                
+            $results = $this->ec2Client->describeVolumes($param);
             $arr = array_merge($arr, $results->get('Reservations'));
         }
         
@@ -165,11 +203,12 @@ class ec2 extends service{
     }
     
     function getAsg(){
-        $results = $this->asgClient->describeAutoScalingGroups();
+        $results = $this->asgClient->describeAutoScalingGroups(['Filters' => $this->tags]);
         $arr = $results->get('AutoScalingGroups');
         
         while($results->get('NextToken') !== null){
             $results = $this->asgClient->describeAutoScalingGroups([
+                'Filters' => $this->tags,
                 'NextToken' => $results->get('NextToken')
             ]);
             $arr = $results->get('AutoScalingGroups');
@@ -213,6 +252,7 @@ class ec2 extends service{
         }
         
         $instances = $this->getResources();
+        
         $driver = 'ec2_ec2';
         foreach($instances as $instance){
             if (class_exists($driver)){
@@ -303,7 +343,6 @@ class ec2 extends service{
                 unset($obj);
             }
         }
-        
         
         $asgList = $this->getAsg();
         $driver = 'ec2_asg';

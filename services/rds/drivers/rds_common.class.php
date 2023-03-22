@@ -193,8 +193,9 @@ class rds_common extends evaluator{
         }
         
         $dbInstClass = explode('.', $this->db['DBInstanceClass']);
-        $dbInstFamily = $dbInstClass[1][0];
-        $dbInstGeneration = $dbInstClass[1][1];
+        $instInfo = __aws_parseInstanceFamily($this->db['DBInstanceClass']);
+        $dbInstFamily = $instInfo['prefixDetail']['family'];
+        $dbInstGeneration = $instInfo['prefixDetail']['version'];
         
         if($dbInstFamily == 't'){
             $this->results['BurstableInstance'] = [-1, $this->db['DBInstanceClass']];   

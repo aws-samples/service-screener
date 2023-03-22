@@ -8,6 +8,7 @@ $feedbackFlag = $__cli_options['feedback'];
 $testmode = $__cli_options['test'];
 $bucket = $__cli_options['bucket'];
 $runmode = $__cli_options['mode'];
+$filters = $__cli_options['filters'];
 
 $DEBUG = ( in_array($debugFlag, CLI_TRUE_KEYWORD_ARRAY) || $debugFlag === true) ? true : false;
 $feedbackFlag = ( in_array($feedbackFlag, CLI_TRUE_KEYWORD_ARRAY) || $feedbackFlag === true) ? true : false;
@@ -16,30 +17,7 @@ $testmode = ( in_array($testmode, CLI_TRUE_KEYWORD_ARRAY) || $testmode === true)
 $runmode = in_array($runmode, ['api-raw', 'api-full', 'report']) ? $runmode : 'report';
 
 # S3 upload specific variables
-$uploadToS3 = false;
-
-if ($bucket) {
-    __info("You have specified a 'bucket' parameter, the report will be uploaded to S3.");
-    __info("The report will be available through public internet, please ensure you understand the risk of exposing the report to the internet. You will be fully RESPONSIBLE on this data.");
-    $confirm = strtolower(readline("Please enter 'y' for yes, 'n' for no, or 'c' to continue without uploading the report to S3 : "));
-
-    do {
-        __warn("You have entered an invalid option. Please try again.");
-        $confirm = strtolower(readline("Please enter 'y' for yes, 'n' for no, or 'c' to continue without uploading the report to S3 : "));    
-    } while(!in_array($confirm, ['y', 'n', 'c']));
-
-    if ($confirm == 'y') {
-        $uploadToS3 = true;
-    }
-    
-    if ($confirm == 'n') {
-        __info("You have chosen not to upload the report to S3.");
-    }
-
-    if ($confirm == 'c') {
-        __info("You have chosen not to upload the report to S3. Continuing...");
-    }
-}
+$uploadToS3 = Uploader::getConfirmationToUploadToS3($bucket);
 
 $profile = $__cli_options['profile'];
 if(!empty($profile)){
@@ -51,6 +29,7 @@ $__AWS_OPTIONS = [
     'signature_version' => CONFIG::AWS_SDK['signature_version']
 ];
 
+$CONFIG->set("__SS_PARAMS", $__cli_options);
 $CONFIG->set("__AWS_OPTIONS", $__AWS_OPTIONS);
 
 $regions = explode(',', $__cli_options['region']);
@@ -76,7 +55,7 @@ exec('cd __fork; rm -f *.json; echo > tail.txt');
 $scanInParallel = sizeof($services) > 1 ? true : false;
 foreach($services as $service){
     ## Scripts move to bootstrap.inc.php
-    scanByService($service, $regions, $scanInParallel);
+    scanByService($service, $regions, $filters, $scanInParallel);
 };
 
 if($scanInParallel)
@@ -110,9 +89,13 @@ foreach($files as $file){
 
 if($testmode)
     exit("Test mode enable, script halted" . PHP_EOL);
+    
+$timespent = round(microtime(true) - $overallTimeStart, 3);
+$scanned['timespent'] = $timespent;
+$CONFIG->set('SCREENER-SUMMARY', $scanned);
 
 __info("Total Resources scanned: " . number_format($scanned['resources']) . " | No. Rules executed: " . number_format($scanned['rules']));
-__info("Time consumed: " .  round(microtime(true) - $overallTimeStart, 3));
+__info("Time consumed: " .  $timespent);
 
 ## Cleanup
 exec('cd '.HTML_FOLDER.'; rm -f *.html; rm -f error.txt');
@@ -124,7 +107,7 @@ exec('cd __fork; rm -f *.json');
 exec('rm -f output.zip');
 
 ## Scripts move to bootstrap.inc.php
-generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $regions, $uploadToS3);
+generateScreenerOutput($runmode, $contexts, $hasGlobal, $serviceStat, $regions, $uploadToS3, $bucket);
 
 if($feedbackFlag){    
     __info("*** Sending feedback ***");
