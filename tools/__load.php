@@ -102,7 +102,6 @@ function __aws_parseInstanceFamily($instanceFamilyInString){
     $CACHE_KEYWORD = 'INSTANCE_SPEC::'.$family;
     $spec = $CONFIG->get($CACHE_KEYWORD);
     if(empty($spec)){
-        echo "<NO CACHE FOUND>";
         $arr = [];
         $arr['region'] = $CURRENT_REGION;
         $arr['version'] = CONFIG::AWS_SDK['EC2CLIENT_VERS'];
