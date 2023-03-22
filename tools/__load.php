@@ -101,7 +101,6 @@ function __aws_parseInstanceFamily($instanceFamilyInString){
     $family = "$p.$s";
     $CACHE_KEYWORD = 'INSTANCE_SPEC::'.$family;
     $spec = $CONFIG->get($CACHE_KEYWORD);
-    print_r($spec);
     if(empty($spec)){
         echo "<NO CACHE FOUND>";
         $arr = [];
@@ -139,8 +138,6 @@ function __aws_parseInstanceFamily($instanceFamilyInString){
             "attributes" => $output[3]
         ]
     ];
-    
-    print_r($result);
     
     return $result;
 }
