@@ -245,7 +245,7 @@ class ec2 extends service{
             }
         }catch(SsmException $e){
             __warn($e->getMessage());
-            __info("!!! Skipping compute optimizer check for " . $region);
+            __info("!!! Skipping compute optimizer check for <" . $region .">");
         }
         
         $driver = 'ec2_costExplorer';
