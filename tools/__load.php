@@ -100,7 +100,7 @@ function __aws_parseInstanceFamily($instanceFamilyInString){
     
     $family = "$p.$s";
     $CACHE_KEYWORD = 'INSTANCE_SPEC::'.$family;
-    $spec = $CONFIG->get($CACHE_KEYWORD);
+    $spec = $CONFIG->get($CACHE_KEYWORD,[]);
     if(empty($spec)){
         $arr = [];
         $arr['region'] = $CURRENT_REGION;
