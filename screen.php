@@ -37,6 +37,10 @@ $services = explode(',', $__cli_options['services']);
 
 $contexts = [];
 
+if($regions[0]=='ALL'){
+    $regions = __getAllEnabledRegions();
+}
+
 $tempConfig = $__AWS_OPTIONS;
 $tempConfig['region'] = $regions[0];
 CONFIG::setAccountInfo($tempConfig);

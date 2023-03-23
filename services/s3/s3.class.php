@@ -51,7 +51,11 @@ class s3 extends service{
             $CONFIG->set('s3::buckets', $buckets);
         }
         
-        $__buckets = $buckets[$this->region];
+        if(isset($buckets[$this->region]))
+            $__buckets = $buckets[$this->region];
+        else 
+            return [];
+            
         if(empty($this->tags))
             return $__buckets;
         

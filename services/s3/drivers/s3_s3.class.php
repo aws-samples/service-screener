@@ -95,7 +95,7 @@ class s3_s3 extends evaluator{
         $this->results['BucketLifecycle'] = [1,'On'];
         try{
             $resp = $this->s3Client->getBucketLifecycle([
-            'Bucket' => $this->bucket
+                'Bucket' => $this->bucket
             ]);
         } catch(Aws\S3\Exception\S3Exception $e){
             if($e->getAwsErrorCode() == 'NoSuchLifecycleConfiguration')
@@ -134,7 +134,7 @@ class s3_s3 extends evaluator{
         $this->results['TlsEnforced'] = [-1,'Off'];
         try {
             $resp = $this->s3Client->getBucketPolicy([
-            'Bucket' => $this->bucket
+                'Bucket' => $this->bucket
             ]);
             # __pr(gettype($resp));
             $policy = json_decode($resp->get('Policy'));
@@ -142,11 +142,28 @@ class s3_s3 extends evaluator{
             // __pr($policy->Statement);
             // __pr($policy->Statement);
             foreach ($policy->Statement as $obj) { # TODO: check how to make cleaner
-                #__pr($obj->Condition);
-                if(isset($obj->Condition) && $obj->Effect == "Deny")
-                    foreach ($obj->Condition as $cond)
-                        if($cond->{'aws:SecureTransport'} == "false") 
+                if(!isset($obj->Condition))
+                    continue;
+                
+                $cc = json_decode(json_encode($obj->Condition), true);
+                
+                if($obj->Effect == "Deny"){
+                    foreach ($cc as $cond){
+                        if(isset($cond['aws:SecureTransport']) && $cond['aws:SecureTransport'] == "false"){
                             $this->results['TlsEnforced'] = [1,'On'];
+                            return;
+                        }
+                    }
+                }
+                
+                if($obj->Effect == "Allow"){
+                    foreach ($cc as $cond){
+                        if(isset($cond['aws:SecureTransport']) && $cond['aws:SecureTransport'] == "true"){
+                            $this->results['TlsEnforced'] = [1,'On'];
+                            return;
+                        }
+                    }
+                }
             }
         } catch (Aws\S3\Exception\S3Exception $e) {
             return;

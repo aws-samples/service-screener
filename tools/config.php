@@ -21,6 +21,7 @@ class Config{
         'EFSCLIENT_VERS' => '2015-02-01',
         'GUARDDUTYCLIENT_VERS' => '2017-11-28',
         'LAMBDACLIENT_VERS' => '2015-03-31',
+        'ACCOUNTCLIENT_VERS' => '2021-02-01',
         'signature_version' => 'v4'
     ];
     
