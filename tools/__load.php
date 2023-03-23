@@ -176,7 +176,7 @@ function __getAllEnabledRegions(){
 
 function __promptConfirmGetAllRegions(){
     echo PHP_EOL;
-    __warn("You specify --region as ALL. It will loop through all ENABLED/OPT-IN regions and it is going to take sometimes to finish it.");
+    __warn("You specify --region as ALL. It will loop through all ENABLED/OPT-IN regions and it is going to take sometime to complete.");
 
     $attempt = 0;
     do {
