@@ -344,6 +344,5 @@ class opensearch_common extends evaluator{
                 }
             }
         }
-        __pr($this->results);
     }
 }
