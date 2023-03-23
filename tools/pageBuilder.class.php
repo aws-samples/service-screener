@@ -368,7 +368,7 @@ class pageBuilder{
         $r2Arr = [124, 100, 75 , 63 , 51 , 78 , 105, 158, 212];
         $r3Arr = [124, 100, 75 , 63 , 51 , 75 , 100, 148, 197];
         
-        if($idx > sizeof($r1Arr)){
+        if($idx >= sizeof($r1Arr)){
             $r1 = rand(1,255);
             $r2 = rand(1,255);
             $r3 = rand(1,255);    
@@ -383,7 +383,7 @@ class pageBuilder{
 
     function __randomHexColorCode($idx){
         $color = ["#e27c7c", "#a86464", "#6d4b4b", "#503f3f", "#333333", "#3c4e4b", "#466964", "#599e94", "#6cd4c5"];
-        if($idx > sizeof($color))
+        if($idx >= sizeof($color))
             return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
         else
             return $color[$idx];

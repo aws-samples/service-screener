@@ -8,6 +8,7 @@ use Aws\ElasticLoadBalancing\ElasticLoadBalancingClient;
 use Aws\AutoScaling\AutoScalingClient;
 use Aws\CostExplorer\CostExplorerClient;
 use Aws\Ssm\SsmClient;
+use Aws\Ssm\Exception\SsmException;
 
 class ec2 extends service{
     const EC2_SDK_VERSION = '2016-11-15';
@@ -224,21 +225,27 @@ class ec2 extends service{
         ## Check Compute Optimize available for the region
         // $this->ssmClient->
         $region = $this->__AWS_OPTIONS['region'];
-        $compOptPath = "/aws/service/global-infrastructure/regions/".$region."/services/compute-optimizer";
-        $compOptCheck = $this->ssmClient->getParametersByPath([
-            'Path' => $compOptPath
-        ]);
         
-        if(isset($compOptCheck['Parameters']) && sizeof($compOptCheck['Parameters']) > 0){
-            $driver = 'ec2_compopt';
-            if (class_exists($driver)){
-                __info('... (Compute Optimizer) inspecting');
-                $obj = new $driver($this->compOptClient);
-                $obj->run();
-                
-                $objs['ComputeOptimizer'] = $obj->getInfo();
-                unset($obj);
+        try{
+            $compOptPath = "/aws/service/global-infrastructure/regions/".$region."/services/compute-optimizer";
+            $compOptCheck = $this->ssmClient->getParametersByPath([
+                'Path' => $compOptPath
+            ]);
+            
+            if(isset($compOptCheck['Parameters']) && sizeof($compOptCheck['Parameters']) > 0){
+                $driver = 'ec2_compopt';
+                if (class_exists($driver)){
+                    __info('... (Compute Optimizer) inspecting');
+                    $obj = new $driver($this->compOptClient);
+                    $obj->run();
+                    
+                    $objs['ComputeOptimizer'] = $obj->getInfo();
+                    unset($obj);
+                }
             }
+        }catch(SsmException $e){
+            __warn($e->getMessage());
+            __info("!!! Skipping compute optimizer check for " . $region);
         }
         
         $driver = 'ec2_costExplorer';
