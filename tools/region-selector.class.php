@@ -1,7 +1,5 @@
 <?php
 
-use Aws\Ec2\Ec2Client;
-
 class AwsRegionSelector {
 
     /**
@@ -9,20 +7,12 @@ class AwsRegionSelector {
      * @return string
      */
     static function selectRegion(): string | bool {
-        $regions = [];
-
-        $ec2Client = new Ec2Client([
-            'version' => 'latest',
-            'region' => 'us-east-1'
-        ]);
-
-        $regions = $ec2Client->describeRegions()->get('Regions');
+        $regions = __getAllEnabledRegions(minimal: true); # Reuse existing function
 
         echo "--------------------------------------" . PHP_EOL;
         __info("Available regions:");
         foreach ($regions as $region) {
-            __info($region['RegionName']) . PHP_EOL;
-            $regions[] = trim(strtolower($region['RegionName']));
+            __info($region) . PHP_EOL;
         }
         echo "--------------------------------------" . PHP_EOL;
 
@@ -38,8 +28,9 @@ class AwsRegionSelector {
              * trim() - remove leading and trailing spaces
              * strtolower() - convert to lowercase
              */
-            if (!in_array(trim(strtolower($region)), array_column($regions, 'RegionName'))) {
-                throw new \InvalidArgumentException(sprintf('Invalid region "%s"', $region));
+            if (!in_array(trim(strtolower($region)), $regions)) {
+                __warn("Region $region is not valid. Skipping..."); # Don't exit, just skip. Best practices.
+                unset($selectedRegions[array_search($region, $selectedRegions)]);
             }
         }
 

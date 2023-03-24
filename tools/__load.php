@@ -143,9 +143,9 @@ function __aws_parseInstanceFamily($instanceFamilyInString){
     return $result;
 }
 
-function __getAllEnabledRegions(){
+function __getAllEnabledRegions(bool $minimal = false){
     global $DEBUG;
-    if(__promptConfirmGetAllRegions() == false){
+    if(!$minimal && __promptConfirmGetAllRegions() == false){
        die('__SCRIPT HALT__, user decided not to proceed');
     }
     
@@ -167,7 +167,7 @@ function __getAllEnabledRegions(){
         }
     }while(!empty($results->get('NextToken')));
     
-    if($DEBUG){
+    if($DEBUG && !$minimal){
         __pr("The following region(s) are enabled/opt-in");
         __pr('[' . sizeof($regions) . "] | " .implode(', ', $regions));
     }

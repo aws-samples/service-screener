@@ -33,12 +33,11 @@ $CONFIG->set("__SS_PARAMS", $__cli_options);
 $CONFIG->set("__AWS_OPTIONS", $__AWS_OPTIONS);
 
 if (!isset($__cli_options['region'])) {
-    __info(" --region or -r option is not present. Generating region list...");
+    __info("--region option is not present. Generating region list...");
     
     $regions = AwsRegionSelector::selectRegion();
-    if (!$regions) {
-        __warn(" No region selected. Exiting.");
-        exit();
+    if (!$regions || sizeof(explode(',', $regions)) == 0) {
+        die("No valid region(s) selected. Exiting.") . PHP_EOL;
     }
 
     // Set back to cli options
