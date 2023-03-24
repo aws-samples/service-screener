@@ -35,7 +35,7 @@ $CONFIG->set("__AWS_OPTIONS", $__AWS_OPTIONS);
 if (!isset($__cli_options['region'])) {
     __info("--region option is not present. Generating region list...");
     
-    $regions = AwsRegionSelector::selectRegion();
+    $regions = AwsRegionSelector::init();
     if (!$regions || sizeof(explode(',', $regions)) == 0) {
         die("No valid region(s) selected. Exiting.") . PHP_EOL;
     }

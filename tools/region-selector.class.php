@@ -6,7 +6,7 @@ class AwsRegionSelector {
      * @throws InvalidArgumentException
      * @return string
      */
-    static function selectRegion(): string | bool {
+    static function init(): string | bool {
         $regions = __getAllEnabledRegions(minimal: true); # Reuse existing function
 
         echo "--------------------------------------" . PHP_EOL;
