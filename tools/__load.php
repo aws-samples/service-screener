@@ -8,6 +8,7 @@ include_once(__DIR__ .'/feedback.class.php');
 include_once(__DIR__ .'/policy.class.php');
 include_once(__DIR__ .'/uploader.class.php');
 include_once(__DIR__ .'/excelBuilder.class.php');
+include_once(__DIR__ .'/region-selector.class.php');
 
 use Aws\Ec2\Ec2Client;
 use Aws\Account\AccountClient;

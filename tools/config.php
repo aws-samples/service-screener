@@ -40,7 +40,7 @@ class Config{
     
     const CLI_ARGUMENT_RULES = [
         "region" => [
-            "required" => true, 
+            "required" => false, 
             "errmsg" => "Please key in --region, example: --region ap-southeast-1"
         ],
         "services" => [
