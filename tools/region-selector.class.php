@@ -75,7 +75,7 @@ class AwsRegionSelector {
             return False;
         }
 
-        $selectedRegions = array_map('trim', array_map('strtolower', explode(',', trim($selectedRegions))));
+        $selectedRegions = array_map('trim', array_map('strtolower', explode(',', str_replace(' ', '', $selectedRegions))));
         foreach ($selectedRegions as $region) {
             /**
              * Quality of life (QoL) improvements:
