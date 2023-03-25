@@ -11,7 +11,6 @@ include_once(__DIR__ .'/excelBuilder.class.php');
 include_once(__DIR__ .'/region-selector.class.php');
 
 use Aws\Ec2\Ec2Client;
-use Aws\Account\AccountClient;
 
 function __pr($o){
     global $DEBUG;
@@ -141,56 +140,4 @@ function __aws_parseInstanceFamily($instanceFamilyInString){
     ];
     
     return $result;
-}
-
-function __getAllEnabledRegions(bool $minimal = false){
-    global $DEBUG;
-    if(!$minimal && __promptConfirmGetAllRegions() == false){
-       die('__SCRIPT HALT__, user decided not to proceed');
-    }
-    
-    $arr['region'] = 'us-east-1';
-    $arr['version'] = CONFIG::AWS_SDK['ACCOUNTCLIENT_VERS'];
-    $acct = new AccountClient($arr);
-    
-    $results = [];
-    $regions = [];
-    do{
-        $params['RegionOptStatusContains'] = ['ENABLED', 'ENABLED_BY_DEFAULT'];
-        $params['MaxResults'] = 20;
-        if(!empty($results) && !empty($results->get('NextToken')))
-            $params['NextToken'] = $results->get('NextToken');
-        
-        $results = $acct->listRegions($params);
-        foreach($results->get('Regions') as $info){
-            $regions[] = $info['RegionName'];
-        }
-    }while(!empty($results->get('NextToken')));
-    
-    if($DEBUG && !$minimal){
-        __pr("The following region(s) are enabled/opt-in");
-        __pr('[' . sizeof($regions) . "] | " .implode(', ', $regions));
-    }
-    
-    return $regions;
-}
-
-function __promptConfirmGetAllRegions(){
-    echo PHP_EOL;
-    __warn("You specify --region as ALL. It will loop through all ENABLED/OPT-IN regions and it is going to take sometime to complete.");
-
-    $attempt = 0;
-    do {
-        if($attempt > 0)
-            __warn("You have entered an invalid option. Please try again.");
-        
-        $confirm = strtolower(readline("Do you want to process? Please enter 'y' for yes, 'n' for no: "));    
-        $attempt++;
-    } while(!in_array($confirm, ['y', 'n']));
-
-    if ($confirm == 'y') {
-        return true;
-    }
-    
-    return false;
 }
