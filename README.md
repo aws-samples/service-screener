@@ -1,9 +1,9 @@
 # Service Screener
 
-This is an unofficial guidance tool for AWS environments.
+An open source guidance tool for AWS environments.
 
 ## Overview
-Service Screener is a tool that runs automated checks on AWS environments and provide recommendations based on the [AWS Well Architected Framework](https://aws.amazon.com/architecture/well-architected/). 
+Service Screener is an open source tool that runs automated checks on AWS environments and provide recommendations based on the [AWS Well Architected Framework](https://aws.amazon.com/architecture/well-architected/). 
 
 AWS customers can use this tool on their own environments and use the recommendations to improve the Security, Reliability, Operational Excellence, Performance Efficiency and Cost Optimisation of their workloads. 
 
@@ -13,7 +13,7 @@ This tool aims to complement the [AWS Well Architected Tool](https://aws.amazon.
 Service Screener uses [AWS Cloudshell](https://aws.amazon.com/cloudshell/), a free serivce that provides a browser-based shell to run scripts using the AWS CLI. It runs multiple `describe` and `get` API calls to determine the configuration of your environment.
 
 ## How much does it cost?
-The tool will cost less than $0.01 each time it is run. 
+Running this tool is free as it is covered under the AWS Free Tier. If you have exceeded the free tier limits, each run will cost less than $0.01.
 
 ## Prerequisites
 1. Please review the [DISCLAIMER](./DISCLAIMER.md) before proceeding. 
