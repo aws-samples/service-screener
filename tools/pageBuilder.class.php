@@ -757,7 +757,7 @@ EOL;
       <div class="form-group">
           <div class="icheck-success d-inline">
               <input type="checkbox" id="cbLowHangingFruit">
-              <label for="cbLowHangingFruit">Show low hanging fruit(s) only</label>
+              <label for="cbLowHangingFruit">Show quick win(s) only</label>
           </div>
       </div>
     </div>
