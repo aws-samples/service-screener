@@ -61,7 +61,7 @@ source install.sh
 ![Install dependencies](https://d39bs20xyg7k53.cloudfront.net/services-screener/p2-dependencies.gif)
 
 ## Using Service Screener
-When running Service Screener, you will need to specify the regions and services you would like it to run on. It currently supports Amazon EC2, Amazon RDS, AWS IAM, Amazon Opensearch, and Amazon S3.
+When running Service Screener, you will need to specify the regions and services you would like it to run on. It currently supports Amazon EC2, Amazon RDS, AWS IAM, Amazon Opensearch, AWS Lambda, Amazon EKS and Amazon S3.
 
 We recommend running it in all regions where you have deployed workloads in. Adjust the code samples below to suit your needs then copy and paste it into Cloudshell to run Service Screener. 
 
