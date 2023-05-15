@@ -2,6 +2,8 @@
 
 An open source guidance tool for AWS environments.
 
+### [Service Screener v2](https://github.com/aws-samples/service-screener-v2) is avaialble with more services coverage and checks. Please use the new version of the tools
+
 ## Overview
 Service Screener is an open source tool that runs automated checks on AWS environments and provide recommendations based on the [AWS Well Architected Framework](https://aws.amazon.com/architecture/well-architected/). 
 
