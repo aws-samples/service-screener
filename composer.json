@@ -1,7 +1,7 @@
 {
     "require": {
         "aws/aws-sdk-php": "^3.259",
-        "phpoffice/phpspreadsheet": "^1.28",
+        "phpoffice/phpspreadsheet": "^2.2.1",
         "phplucidframe/console-table": "^1.2"
     }
 }
